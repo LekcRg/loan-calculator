@@ -27,7 +27,7 @@ export default function Home() {
       </Head>
       <MainBlock>
         <Title>
-          Hello world!
+          Deployed!
         </Title>
       </MainBlock>
     </>

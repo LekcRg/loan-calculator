@@ -1,0 +1,68 @@
+name: Build and Deploy
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Клонируем репозиторий
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Собираем Docker-образ и сохраняем его в файл
+      - name: Build Docker image
+        run: docker build -t nextjs-app .
+        shell: bash
+
+      # Сохраняем Docker-образ в архив
+      - name: Save Docker image to archive
+        run: docker save nextjs-app -o nextjs-app.tar
+        shell: bash
+
+      # Копируем архив с Docker-образом на сервер
+      - name: Copy Docker image archive to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          source: nextjs-app.tar
+          target: /tmp
+
+      # Распаковываем архив с Docker-образом на сервере
+      - name: Extract Docker image from archive on server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: |
+            docker load --input /tmp/nextjs-app.tar
+
+      # Удаляем архив с Docker-образом на сервере
+      - name: Remove Docker image archive on server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: |
+            rm /tmp/nextjs-app.tar
+
+      # Запускаем Docker-контейнер на сервере
+      - name: Run Docker container on server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: |
+            docker stop nextjs-app || true
+            docker rm nextjs-app || true
+            docker run -d --name nextjs-app -p 3000:3000 nextjs-app
