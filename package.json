@@ -1,5 +1,5 @@
 {
-  "name": "next-project",
+  "name": "loan-calculator",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -24,6 +24,8 @@
     "typescript": "5.0.4"
   },
   "devDependencies": {
+    "eslint-config-prettier": "^8.8.0",
+    "prettier": "2.8.8",
     "styled-components": "^5.3.9"
   }
 }

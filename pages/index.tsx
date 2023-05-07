@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import Head from 'next/head'
+import Head from 'next/head';
 
 const MainBlock = styled.main`
   display: flex;
@@ -8,7 +8,7 @@ const MainBlock = styled.main`
   justify-content: center;
   width: 100vw;
   height: 100vh;
-`
+`;
 
 const Title = styled.h1`
   font-size: 64px;
@@ -31,5 +31,5 @@ export default function Home() {
         </Title>
       </MainBlock>
     </>
-  )
+  );
 }
