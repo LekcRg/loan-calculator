@@ -27,7 +27,7 @@ export default function Home() {
       </Head>
       <MainBlock>
         <Title>
-          Deployed!
+          Deployed
         </Title>
       </MainBlock>
     </>
