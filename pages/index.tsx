@@ -1,34 +1,30 @@
 import styled from 'styled-components';
-
 import Head from 'next/head';
+
+import Calculator from '@/components/Calculator';
 
 const MainBlock = styled.main`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   width: 100vw;
   height: 100vh;
+  padding: 16px;
 `;
 
-const Title = styled.h1`
-  font-size: 64px;
-  font-weight: 400;
-  color: #0f0;
-`;
 
 export default function Home() {
   return (
     <>
       <Head>
-        <title>Hello world!</title>
-        <meta name="description" content="Hello world! From next.js" />
+        <title>Loan calculator | loan.minimite.me </title>
+        <meta name="description" content="Loan calculator | Minimite.me" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <MainBlock>
-        <Title>
-          Deployed
-        </Title>
+        <Calculator/>
       </MainBlock>
     </>
   );
