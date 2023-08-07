@@ -2,9 +2,18 @@
 
 import styled from 'styled-components';
 
+import ContainerBlock from '@/components/ui/Container';
+
 const HeaderBlock = styled.header`
   display: flex;
   width: 100%;
+`;
+
+const Container = styled(ContainerBlock)`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
 `;
 
 const Title = styled.h1`
@@ -22,7 +31,11 @@ const Title = styled.h1`
 const Header = () => {
   return (
     <HeaderBlock>
-      <Title>Loan calculator</Title>
+      <Container>
+        <Title>
+          Loan calculator
+        </Title>
+      </Container>
     </HeaderBlock>
   );
 };

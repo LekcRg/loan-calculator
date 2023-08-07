@@ -1,9 +1,9 @@
-import '@/styles/globals.css';
 import { Metadata } from 'next';
 
 import StyledComponentsRegistry from '@/lib/registry';
-
-import Header from '@/components/base/Header';
+import GlobalStyles from '@/styles/GlobalStyled';
+import fonts from '@/styles/fonts';
+import Header from '@/components/layout/Header';
 
 export const metadata: Metadata = {
   title: 'Loan calculator | loan.minimite.me',
@@ -13,14 +13,15 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-    children: React.ReactNode
-  }) {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
-      <body>
+      <body className={fonts.className}>
         <StyledComponentsRegistry>
-          <Header/>
+          <Header />
           {children}
+          <GlobalStyles />
         </StyledComponentsRegistry>
       </body>
     </html>
