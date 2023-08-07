@@ -14,7 +14,6 @@ const MainBlock = styled.main`
   padding: 16px;
 `;
 
-
 export default function Home() {
   return (
     <>
