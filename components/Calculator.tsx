@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { prettyNumber } from '@/assets/ts/textUtils';
 
-import RInput from '@/components/base/RInput';
+import RInput from '@/components/ui/RInput';
 
 const Calculator = styled.div`
   display: flex;
@@ -11,18 +11,6 @@ const Calculator = styled.div`
 
   @media screen and (max-width: 800px) {
     width: 100%;
-  }
-`;
-
-const Title = styled.h1`
-  font-size: 64px;
-  font-weight: 400;
-  color: #0f0;
-  margin-bottom: 20px;
-  text-align: center;
-
-  @media screen and (max-width: 800px) {
-    font-size: 32px;
   }
 `;
 
@@ -87,10 +75,6 @@ export default function Home() {
 
   return (
     <Calculator>
-      <Title>
-          Loan calculator
-      </Title>
-
       <Wrapper>
         <Input
           numbers
