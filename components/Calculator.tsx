@@ -1,11 +1,17 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
+import type { LoanMonth } from '@/types/Calculator';
+
 import { prettyNumber } from '@/assets/ts/textUtils';
 
 import RInput from '@/components/ui/RInput';
 
-const Calculator = styled.div`
+type Props = {
+  onChange?: Function,
+}
+
+const CalculatorBlock = styled.div`
   display: flex;
   flex-direction: column;
 
@@ -38,78 +44,104 @@ const Result = styled.div`
   }
 `;
 
-
-export default function Home() {
-  const [ price, setPrice ] = useState(2000000);
-  const [ years, setYears ] = useState(10);
-  const [ percent, setPercent ] = useState(12);
+export default function Calculator(props: Props) {
+  const { onChange } = props;
+  const [ state, setState ] = useState<LoanMonth>({
+    amount: 2000000,
+    term: 10,
+    rate: 12,
+  });
   const [ monthly, setMonthly ] = useState(0);
 
-  const onInputPrice = (value: string) => {
-    setPrice(Number(value));
+  const onInput = (
+    value: string | number,
+    key: string,
+    ev: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    if (!key) {
+      console.warn('onInputAmount: Empty key');
+    }
+
+    setState({
+      ...state,
+      [key]: Number(value),
+    });
   };
-  const onInputYears = (value: string) => {
-    setYears(Number(value));
-  };
-  const onInputPercent = (value: string) => {
-    setPercent(Number(value));
-  };
+  
+  // const onInputTerm = (value: string | number) => {
+  //   setState({
+  //     ...state,
+  //     term: Number(value),
+  //   });
+  // };
+  // const onInputPercent = (value: string | number) => {
+  //   setState({
+  //     ...state,
+  //     rate: Number(value),
+  //   });
+  // };
 
   useEffect(() => {
-    if (!price || !years || !percent) {
+    if (!state.amount || !state.term || !state.rate) {
       return;
     }
 
-    const monthPercent = (percent / 12) / 100;
-    const months = years * 12;
+    const monthRate = state.rate / 12 / 100;
+    const months = state.term * 12;
 
     const monthlyPayment =
-      (price * monthPercent * ((1 + monthPercent) ** months)) /
-      (((1 + monthPercent) ** months) - 1);
-
+      (state.amount * monthRate * (1 + monthRate) ** months) /
+      ((1 + monthRate) ** months - 1);
 
     if (monthlyPayment && !isNaN(monthlyPayment)) {
       setMonthly(monthlyPayment);
     }
-  }, [ price, monthly, years, percent ]);
+  }, [ state, monthly ]);
+
+  useEffect(() => {
+    if (onChange) {
+      onChange(state);
+    }
+  }, [ state, onChange ]);
 
   return (
-    <Calculator>
+    <CalculatorBlock className="container">
       <Wrapper>
         <Input
           numbers
-          value={price}
-          label="Price"
-          placeholder="Price"
-          name="price"
+          value={state.amount}
+          label="Loan amount"
+          placeholder="Loan amount"
+          name="amount"
           autoComplete="off"
-          onInput={onInputPrice}
+          onInput={onInput}
         />
 
         <Input
           numbers
-          value={years}
-          label="Years"
-          placeholder="Years"
-          name="years"
+          value={state.term}
+          label="Term"
+          placeholder="Term"
+          name="term"
           autoComplete="off"
-          onInput={onInputYears}
+          onInput={onInput}
         />
 
         <Input
           numbers
-          value={percent}
-          label="Percent"
-          placeholder="Percent"
-          name="percent"
+          value={state.rate}
+          label="Rate"
+          placeholder="Rate"
+          name="rate"
           autoComplete="off"
-          onInput={onInputPercent}
+          onInput={onInput}
         />
       </Wrapper>
 
       <Result>
-          Monthly payments: <span>{prettyNumber(Math.floor(monthly * 100) / 100)}</span>
+        Monthly payments:{' '}
+        <span>{prettyNumber(Math.floor(monthly * 100) / 100)}</span>
       </Result>
-    </Calculator>
+    </CalculatorBlock>
   );
 }

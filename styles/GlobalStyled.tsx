@@ -114,6 +114,13 @@ const GlobalStyles = createGlobalStyle`
       color-scheme: dark;
     }
   }
+
+  .container {
+    width: 100%;
+    max-width: 1232px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
 `;
 
 export default GlobalStyles;

@@ -72,14 +72,14 @@ const RInput = (props: {
 
     const returnValue = getReturnValue(value);
     if (onInput) {
-      onInput(returnValue, ev);
+      onInput(returnValue, name, ev);
     }
   };
 
   const onChangeInput = (ev: React.ChangeEvent<HTMLInputElement>) => {
     const returnValue = getReturnValue(lazyValue);
     if (onChange) {
-      onChange(returnValue, ev);
+      onChange(returnValue, name, ev);
     }
   };
 
