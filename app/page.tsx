@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
-import type { LoanMonth } from '@/types/Calculator';
+import type { LoanData } from '@/types/Calculator';
 
 import CalculatorComponent from '@/components/Calculator';
 import CalaculatorTable from '@/components/CalculatorTable';
@@ -20,15 +20,22 @@ const Calculator = styled(CalculatorComponent)`
 `;
 
 export default function Home() {
-  const [ calculatorState, setCalculatorState ] = useState<LoanMonth[]>();
+  const [ calculatorState, setCalculatorState ] = useState<LoanData>();
+  const [ monthly, setMonthly ] = useState<number | undefined>();
+
+  const onChangeCalculator = (state: LoanData, monthly: number) => {
+    setCalculatorState(state);
+    setMonthly(monthly);
+  };
 
   return (
     <MainBlock>
       <Calculator
-        onChange={setCalculatorState}
+        onChange={onChangeCalculator}
       />
-      <CalaculatorTable 
+      <CalaculatorTable
         calculateData={calculatorState}
+        monthly={monthly}
       />
     </MainBlock>
   );

@@ -5,6 +5,14 @@
 //   }
 // }
 
+export const roundNumber = (number: number) => {
+  if (isNaN(number)) {
+    return number;
+  }
+
+  return Math.floor(number * 100) / 100;
+};
+
 export const prettyNumber = (value?: string | number) => {
   // only number + splitThousands
   if (value === undefined) {

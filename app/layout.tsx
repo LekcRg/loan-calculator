@@ -1,9 +1,9 @@
 import { Metadata } from 'next';
 
 import StyledComponentsRegistry from '@/lib/registry';
-import GlobalStyles from '@/styles/GlobalStyled';
 import fonts from '@/styles/fonts';
 import Header from '@/components/layout/Header';
+import { Providers } from './providers';
 
 export const metadata: Metadata = {
   title: 'Loan calculator | loan.minimite.me',
@@ -19,9 +19,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={fonts.className}>
         <StyledComponentsRegistry>
-          <Header />
-          {children}
-          <GlobalStyles />
+          <Providers>
+            <Header />
+            {children}
+          </Providers>
         </StyledComponentsRegistry>
       </body>
     </html>

@@ -1,11 +1,16 @@
-import React, { useEffect } from 'react';
+'use client';
+
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import type { LoanMonth } from '@/types/Calculator';
+import { prettyNumber, roundNumber } from '@/assets/ts/textUtils';
+
+import type { LoanData, TableRow } from '@/types/Calculator';
 
 type Props = {
   className?: string,
-  calculateData?: LoanMonth[],
+  calculateData?: LoanData,
+  monthly?: number,
 }
 
 const Table = styled.table`
@@ -26,44 +31,53 @@ const CalculatorTable = (props: Props) => {
   const {
     className,
     calculateData,
+    monthly,
   } = props;
 
-  const data = [
-    {
-      amount: 23536.74,
-      interest: 18440.85,
-      principal: 5095.89,
-    },
-    {
-      amount: 23536.74,
-      interest: 18440.85,
-      principal: 5095.89,
-    },
-    {
-      amount: 23536.74,
-      interest: 18440.85,
-      principal: 5095.89,
-    },
-    {
-      amount: 23536.74,
-      interest: 18440.85,
-      principal: 5095.89,
-    },
-    {
-      amount: 23536.74,
-      interest: 18440.85,
-      principal: 5095.89,
-    },
-  ];
+  const [ tableState, setTableState ] = useState<TableRow[]>([]);
 
-  // useEffect(() => {
-  //   // calculate here
-  // }, [ calculateData ]);
+  // ms to days
+  // (end - start) / 1000 / 60 / 60 / 24
+
+  useEffect(() => {
+    if (!calculateData || !monthly || !calculateData?.amount || !calculateData?.rate || !calculateData?.term) {
+      return;
+    }
+
+    let amount = calculateData.amount;
+    const result:TableRow[] = [];
+
+    while (amount > 0) {
+      const principal = roundNumber((amount * ((calculateData.rate / 100) / 365)) * 31);
+      const interest = roundNumber(monthly - principal);
+      const ending = roundNumber(amount - interest);
+
+      if (interest <= 0) {
+        return;
+      }
+
+      result.push({
+        amount: amount > monthly ? monthly : amount,
+        interest,
+        principal,
+        ending,
+      });
+
+      amount = ending;
+    }
+
+    setTableState(result);
+  }, [ calculateData, setTableState, monthly ]);
 
   return (
-    <Table className="container">
+    <Table 
+      className={`container ${className}`}
+    >
       <tbody>
         <tr>
+          <HeadCell>
+            id
+          </HeadCell>
           <HeadCell>
             Amount
           </HeadCell>
@@ -73,18 +87,31 @@ const CalculatorTable = (props: Props) => {
           <HeadCell>
             Principal
           </HeadCell>
+          <HeadCell>
+            Ending balance
+          </HeadCell>
         </tr>
         {
-          data.map((item, i) => (
+          tableState.map((item, i) => (
             <tr key={i}>
               <Cell>
-                { item.amount }
+                { i }
               </Cell>
               <Cell>
-                { item.interest }
+                { prettyNumber(item.amount) }
               </Cell>
               <Cell>
-                { item.principal }
+                { prettyNumber(item.interest) }
+              </Cell>
+              <Cell>
+                { prettyNumber(item.principal) }
+              </Cell>
+              <Cell>
+                { 
+                  item.ending > 0
+                    ? prettyNumber(item.ending)
+                    : 0 
+                }
               </Cell>
             </tr>
           ))

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-import type { LoanMonth } from '@/types/Calculator';
+import type { LoanData } from '@/types/Calculator';
 
 import { prettyNumber } from '@/assets/ts/textUtils';
 
@@ -46,12 +46,12 @@ const Result = styled.div`
 
 export default function Calculator(props: Props) {
   const { onChange } = props;
-  const [ state, setState ] = useState<LoanMonth>({
-    amount: 2000000,
+  const [ state, setState ] = useState<LoanData>({
+    amount: 5000000,
     term: 10,
     rate: 12,
   });
-  const [ monthly, setMonthly ] = useState(0);
+  const [ monthly, setMonthly ] = useState<number | undefined>();
 
   const onInput = (
     value: string | number,
@@ -67,19 +67,6 @@ export default function Calculator(props: Props) {
       [key]: Number(value),
     });
   };
-  
-  // const onInputTerm = (value: string | number) => {
-  //   setState({
-  //     ...state,
-  //     term: Number(value),
-  //   });
-  // };
-  // const onInputPercent = (value: string | number) => {
-  //   setState({
-  //     ...state,
-  //     rate: Number(value),
-  //   });
-  // };
 
   useEffect(() => {
     if (!state.amount || !state.term || !state.rate) {
@@ -95,12 +82,9 @@ export default function Calculator(props: Props) {
 
     if (monthlyPayment && !isNaN(monthlyPayment)) {
       setMonthly(monthlyPayment);
-    }
-  }, [ state, monthly ]);
-
-  useEffect(() => {
-    if (onChange) {
-      onChange(state);
+      if (onChange) {
+        onChange(state, monthlyPayment);
+      }
     }
   }, [ state, onChange ]);
 
@@ -138,10 +122,21 @@ export default function Calculator(props: Props) {
         />
       </Wrapper>
 
-      <Result>
-        Monthly payments:{' '}
-        <span>{prettyNumber(Math.floor(monthly * 100) / 100)}</span>
-      </Result>
+      {
+        monthly ?
+          (
+            <Result>
+              Monthly payments:{' '}
+              <span>{prettyNumber(Math.floor(monthly * 100) / 100)}</span>
+            </Result>
+          )
+          : (
+            <Result>
+              <span>Fill in all the fields</span>
+            </Result>
+          )
+      }
+      
     </CalculatorBlock>
   );
 }
