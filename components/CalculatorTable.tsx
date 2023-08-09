@@ -46,24 +46,49 @@ const CalculatorTable = (props: Props) => {
 
     let amount = calculateData.amount;
     const result:TableRow[] = [];
+    const calcuateDate = new Date(calculateData.date);
+
+    let currentDate = calcuateDate;
+    let year = calcuateDate.getFullYear();
+    let month = calcuateDate.getMonth();
+    const day = calcuateDate.getDate();
 
     while (amount > 0) {
-      const principal = roundNumber((amount * ((calculateData.rate / 100) / 365)) * 31);
-      const interest = roundNumber(monthly - principal);
-      const ending = roundNumber(amount - interest);
+      if (month < 11) {
+        month++;
+      } else {
+        year++;
+        month = 0;
+      }
+
+      const nextDate = new Date(year, month, day);
+      const days = Math.round((nextDate.getTime() - currentDate.getTime()) / 1000 / 60 / 60 / 24);
+
+      const principal = roundNumber((amount * ((calculateData.rate / 100) / 365)) * days);
+      const interest = roundNumber(
+        monthly < amount
+          ? monthly - principal
+          : amount - principal
+      );
+      const ending = monthly < amount ? roundNumber(amount - interest) : 0;
 
       if (interest <= 0) {
         return;
       }
+
+      const prettyDay = day > 9 ? day : `0${day}`;
+      const prettyMonth = month + 1 > 9 ? month + 1 : `0${month + 1}`;
 
       result.push({
         amount: amount > monthly ? monthly : amount,
         interest,
         principal,
         ending,
+        date: `${prettyDay}.${prettyMonth}.${year}`,
       });
 
       amount = ending;
+      currentDate = nextDate;
     }
 
     setTableState(result);
@@ -77,6 +102,9 @@ const CalculatorTable = (props: Props) => {
         <tr>
           <HeadCell>
             id
+          </HeadCell>
+          <HeadCell>
+            date
           </HeadCell>
           <HeadCell>
             Amount
@@ -95,7 +123,10 @@ const CalculatorTable = (props: Props) => {
           tableState.map((item, i) => (
             <tr key={i}>
               <Cell>
-                { i }
+                { i + 1 }
+              </Cell>
+              <Cell>
+                { item.date }
               </Cell>
               <Cell>
                 { prettyNumber(item.amount) }

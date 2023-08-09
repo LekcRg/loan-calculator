@@ -28,6 +28,7 @@ const RInput = (props: {
     name?: string,
     label?: string,
     numbers?: boolean,
+    disabled?: boolean,
     value?: string | number,
     autoComplete?: string,
     className?: string,
@@ -46,6 +47,7 @@ const RInput = (props: {
     onChange,
     onInput,
     id,
+    disabled,
   } = props;
 
   const [
@@ -85,15 +87,9 @@ const RInput = (props: {
 
   useEffect(() => {
     if (value !== undefined) {
-      setLazyValue(prettyNumber(value));
+      setLazyValue(numbers ? prettyNumber(value) : value); 
     }
-  }, [ value ]);
-
-  useEffect(() => {
-    if (value !== undefined) {
-      setLazyValue(prettyNumber(value));
-    }
-  }, [ value ]);
+  }, [ value, setLazyValue, numbers ]);
 
   return (
     <Wrapper
@@ -115,6 +111,7 @@ const RInput = (props: {
         onChange={onChangeInput}
         onInput={onInputInput}
         autoComplete={autoComplete}
+        disabled={disabled}
       />
     </Wrapper>
   );

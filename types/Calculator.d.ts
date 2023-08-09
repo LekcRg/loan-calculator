@@ -2,6 +2,7 @@ export type LoanData = {
   amount: number,
   term: number,
   rate: number,
+  date: string,
 }
 
 export type TableRow = {
@@ -9,4 +10,5 @@ export type TableRow = {
   interest: number,
   principal: number,
   ending: number,
+  date: string,
 }

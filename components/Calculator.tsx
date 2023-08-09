@@ -50,6 +50,7 @@ export default function Calculator(props: Props) {
     amount: 5000000,
     term: 10,
     rate: 12,
+    date: '02.02.2002',
   });
   const [ monthly, setMonthly ] = useState<number | undefined>();
 
@@ -82,6 +83,7 @@ export default function Calculator(props: Props) {
 
     if (monthlyPayment && !isNaN(monthlyPayment)) {
       setMonthly(monthlyPayment);
+
       if (onChange) {
         onChange(state, monthlyPayment);
       }
@@ -104,7 +106,7 @@ export default function Calculator(props: Props) {
         <Input
           numbers
           value={state.term}
-          label="Term"
+          label="Term (years)"
           placeholder="Term"
           name="term"
           autoComplete="off"
@@ -118,6 +120,16 @@ export default function Calculator(props: Props) {
           placeholder="Rate"
           name="rate"
           autoComplete="off"
+          onInput={onInput}
+        />
+
+        <Input
+          value={state.date}
+          label="Date (mm.dd.yyyy)"
+          placeholder="Date"
+          name="date"
+          autoComplete="off"
+          disabled
           onInput={onInput}
         />
       </Wrapper>
