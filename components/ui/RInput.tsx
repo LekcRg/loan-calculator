@@ -17,10 +17,16 @@ const Label = styled.label`
 const Input = styled.input`
   font-size: 18px;
   color: #ddd;
+  background: #3b3b3b;
   outline: none;
   border: none;
   padding: 12px;
   border-radius: 4px;
+
+  &[disabled] {
+    background: #121212;
+    color: rgba(221, 221, 221, .75);
+  }
 `;
 
 const RInput = (props: {

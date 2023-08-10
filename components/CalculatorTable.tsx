@@ -36,9 +36,6 @@ const CalculatorTable = (props: Props) => {
 
   const [ tableState, setTableState ] = useState<TableRow[]>([]);
 
-  // ms to days
-  // (end - start) / 1000 / 60 / 60 / 24
-
   useEffect(() => {
     if (!calculateData || !monthly || !calculateData?.amount || !calculateData?.rate || !calculateData?.term) {
       return;
@@ -46,7 +43,7 @@ const CalculatorTable = (props: Props) => {
 
     let amount = calculateData.amount;
     const result:TableRow[] = [];
-    const calcuateDate = new Date(calculateData.date);
+    const calcuateDate = new Date(calculateData.date.replace(/\./g, '/'));
 
     let currentDate = calcuateDate;
     let year = calcuateDate.getFullYear();
