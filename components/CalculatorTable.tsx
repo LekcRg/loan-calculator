@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { prettyNumber, roundNumber } from '@/assets/ts/textUtils';
+import { roundAndSplitThousands } from '@/assets/ts/textUtils';
 
 import type { LoanData, TableRow } from '@/types/Calculator';
 
@@ -15,11 +15,21 @@ type Props = {
 
 const Table = styled.table`
   width: 100%;
+  border-spacing: 0;
 `;
 
 const HeadCell = styled.th`
   padding: 16px 0 10px;
   border-bottom: 1px solid #ddd;
+`;
+
+const Row = styled.tr`
+  background: rgba(20, 20, 20, 0);
+  transition: background .2s ease;
+
+  &:hover {
+    background: rgba(20, 20, 20, 1);
+  }
 `;
 
 const Cell = styled.td`
@@ -50,7 +60,13 @@ const CalculatorTable = (props: Props) => {
     let month = calcuateDate.getMonth();
     const day = calcuateDate.getDate();
 
+    const msToDay = 1000 * 60 * 60 * 24;
+
     while (amount > 0) {
+      const currentYear = new Date(year, 0, 1);
+      const nextYear = new Date(year + 1, 0, 1);
+      const yearDays = (nextYear.getTime() - currentYear.getTime()) / msToDay;
+
       if (month < 11) {
         month++;
       } else {
@@ -59,17 +75,16 @@ const CalculatorTable = (props: Props) => {
       }
 
       const nextDate = new Date(year, month, day);
-      const days = Math.round((nextDate.getTime() - currentDate.getTime()) / 1000 / 60 / 60 / 24);
+      const monthDays = (nextDate.getTime() - currentDate.getTime()) / msToDay;
 
-      const principal = roundNumber((amount * ((calculateData.rate / 100) / 365)) * days);
-      const interest = roundNumber(
-        monthly < amount
-          ? monthly - principal
-          : amount - principal
-      );
-      const ending = monthly < amount ? roundNumber(amount - interest) : 0;
+      const interest = amount * calculateData.rate * monthDays / yearDays / 100;
 
-      if (interest <= 0) {
+      const principal = monthly < amount
+        ? monthly - interest
+        : amount;
+      const ending = monthly < amount ? ((amount - principal) * 100) / 100 : 0;
+
+      if (principal <= 0) {
         return;
       }
 
@@ -77,11 +92,15 @@ const CalculatorTable = (props: Props) => {
       const prettyMonth = month + 1 > 9 ? month + 1 : `0${month + 1}`;
 
       result.push({
-        amount: amount > monthly ? monthly : amount,
         interest,
         principal,
-        ending,
         date: `${prettyDay}.${prettyMonth}.${year}`,
+        amount: amount > monthly
+          ? monthly
+          : principal + interest,
+        ending: ending > 0
+          ? ending
+          : 0,
       });
 
       amount = ending;
@@ -101,16 +120,16 @@ const CalculatorTable = (props: Props) => {
             id
           </HeadCell>
           <HeadCell>
-            date
+            Date
           </HeadCell>
           <HeadCell>
-            Amount
-          </HeadCell>
-          <HeadCell>
-            Interest
+            Full payment
           </HeadCell>
           <HeadCell>
             Principal
+          </HeadCell>
+          <HeadCell>
+            Interest
           </HeadCell>
           <HeadCell>
             Ending balance
@@ -118,7 +137,7 @@ const CalculatorTable = (props: Props) => {
         </tr>
         {
           tableState.map((item, i) => (
-            <tr key={i}>
+            <Row key={i}>
               <Cell>
                 { i + 1 }
               </Cell>
@@ -126,22 +145,20 @@ const CalculatorTable = (props: Props) => {
                 { item.date }
               </Cell>
               <Cell>
-                { prettyNumber(item.amount) }
+                { roundAndSplitThousands(item.amount) }
               </Cell>
               <Cell>
-                { prettyNumber(item.interest) }
+                { roundAndSplitThousands(item.principal) }
               </Cell>
               <Cell>
-                { prettyNumber(item.principal) }
+                { roundAndSplitThousands(item.interest) }
               </Cell>
               <Cell>
-                { 
-                  item.ending > 0
-                    ? prettyNumber(item.ending)
-                    : 0 
+                {
+                  roundAndSplitThousands(item.ending)
                 }
               </Cell>
-            </tr>
+            </Row>
           ))
         }
       </tbody>

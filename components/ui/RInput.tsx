@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 
-import { prettyNumber } from '@/assets/ts/textUtils';
+import { inputFloat } from '@/assets/ts/textUtils';
 
 const Wrapper = styled.div`
   display: flex;
@@ -64,21 +64,23 @@ const RInput = (props: {
   const getReturnValue = (value: string | number) => {
     if (numbers && lazyValue !== undefined) {
       return Number(String(value).replace(/[^0-9.,]/g, ''));
-    } else {
-      return value;
     }
+
+    return value;
   };
 
   const onInputInput = (ev: React.ChangeEvent<HTMLInputElement>) => {
     let value = ev.target.value;
 
-    if (numbers) {
-      setLazyValue(prettyNumber(value));
-    } else {
-      setLazyValue(value);
+    const newValue = numbers ? inputFloat(value) : value;
+
+    if (lazyValue === newValue) {
+      return;
     }
 
-    const returnValue = getReturnValue(value);
+    setLazyValue(newValue);
+
+    const returnValue = getReturnValue(newValue);
     if (onInput) {
       onInput(returnValue, name, ev);
     }
@@ -93,7 +95,7 @@ const RInput = (props: {
 
   useEffect(() => {
     if (value !== undefined) {
-      setLazyValue(numbers ? prettyNumber(value) : value); 
+      setLazyValue(numbers ? inputFloat(value) : value); 
     }
   }, [ value, setLazyValue, numbers ]);
 

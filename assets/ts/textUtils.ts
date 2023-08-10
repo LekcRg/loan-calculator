@@ -1,44 +1,62 @@
-// export const numbersOnly = (value?: string | number) => {
-//   // only number + splitThousands
-//   if (value === undefined) {
-//     return String(value);
-//   }
-// }
-
-export const roundNumber = (number: number) => {
-  if (isNaN(number)) {
-    return number;
-  }
-
-  return Math.floor(number * 100) / 100;
-};
-
-export const prettyNumber = (value?: string | number) => {
-  // only number + splitThousands
+export const numbersOnly = (value?: string | number): string => {
   if (value === undefined) {
     return String(value);
   }
 
-  value = String(value).replace(/[^0-9.,]/g, '');
-  const valueLen = value.length;
-  const dotIndex = value.indexOf('.');
+  return String(value).replace(/[^0-9.,]/g, '');
+};
 
+export const splitThousands = (num: number | string): string => {
+  if (isNaN(Number(num))) {
+    return String(num);
+  }
 
-  if (dotIndex >= 0 && dotIndex + 1 < valueLen) {
-    const lastSymbol = value[valueLen - 1];
+  return String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+};
+
+export const roundNumber = (number: number | string) => {
+  number = Number(number);
+  if (isNaN(number)) {
+    return number;
+  }
+
+  return Math.round(number * 100) / 100;
+};
+
+export const roundAndSplitThousands = (num: number | string) => {
+  if (isNaN(Number(num))) {
+    return num;
+  }
+
+  return splitThousands(roundNumber(num));
+};
+
+export const inputFloat = (
+  value: string | number,
+  max?: number,
+  decimal: number = 2): string => {
+  let result = numbersOnly(value);
+  const maxIntLength = String(Number.MAX_SAFE_INTEGER).length;
+
+  if (result.length >= maxIntLength) {
+    result = result.slice(0, maxIntLength - 1);
+  }
+  const resultLen = result.length;
+  const dotIndex = result.indexOf('.');
+
+  if (dotIndex >= 0 && dotIndex + 1 < resultLen) {
+    const lastSymbol = result[resultLen - 1];
 
     if (lastSymbol === '.' || lastSymbol === ',') {
-      value = value.slice(0, valueLen - 1);
+      result = result.slice(0, resultLen - 1);
     }
   }
 
   if (dotIndex >= 0) {
-    const valueArr = value.split('.');
+    const resultArr = result.split('.');
 
-    value = `${valueArr[0]}.${valueArr[1].slice(0, 2)}`;
+    result = `${resultArr[0]}.${resultArr[1].slice(0, decimal)}`;
   }
 
-  return value
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-    .replace(',', '.');
+  return splitThousands(result);
 };
