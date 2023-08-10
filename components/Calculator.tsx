@@ -74,7 +74,7 @@ const initialState = {
 
 export default function Calculator(props: Props) {
   const { onChange } = props;
-  const [ state, setState ] = useState<LoanData>(initialState);
+  const [ state, setState ] = useState<LoanData>(getLocalStorageState() || initialState);
   const [ monthly, setMonthly ] = useState<number | undefined>();
 
   const onInput = (
