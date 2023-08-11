@@ -1,42 +1,36 @@
-'use client';
+import { cookies } from 'next/headers';
 
-import { useState } from 'react';
-import styled from 'styled-components';
+import { calculateMonthly, calculateTable } from '@/assets/ts/calculator';
 
-import type { LoanData } from '@/types/Calculator';
+import HomePage from '@/components/pages/HomePage';
+import { LoanData } from '@/types/Calculator';
 
-import CalculatorComponent from '@/components/Calculator';
-import CalaculatorTable from '@/components/CalculatorTable';
+const initialState:LoanData = {
+  amount: 5000000,
+  term: 10,
+  rate: 12,
+  date: '02.02.2022',
+};
 
-const MainBlock = styled.main`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-`;
+const getCookiesState = (): LoanData => {
+  const cookiesStore = cookies();
+  const cookiesState = cookiesStore.get('calcState');
 
-const Calculator = styled(CalculatorComponent)`
-  margin-bottom: 20px;
-`;
+  if (cookiesState && cookiesState?.value
+    && cookiesState.value[0] === '{'
+    && cookiesState.value[cookiesState.value?.length - 1] === '}') {
+    return JSON.parse(cookiesState.value);
+  }
+
+  return initialState;
+};
 
 export default function Home() {
-  const [ calculatorState, setCalculatorState ] = useState<LoanData>();
-  const [ monthly, setMonthly ] = useState<number | undefined>();
-
-  const onChangeCalculator = (state: LoanData, monthly: number) => {
-    setCalculatorState(state);
-    setMonthly(monthly);
-  };
+  const state = getCookiesState();
 
   return (
-    <MainBlock>
-      <Calculator
-        onChange={onChangeCalculator}
-      />
-      <CalaculatorTable
-        calculateData={calculatorState}
-        monthly={monthly}
-      />
-    </MainBlock>
+    <HomePage 
+      initialState={state}
+    />
   );
 }

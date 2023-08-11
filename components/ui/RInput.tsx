@@ -35,7 +35,7 @@ const RInput = (props: {
     label?: string,
     numbers?: boolean,
     disabled?: boolean,
-    value?: string | number,
+    value: string | number,
     autoComplete?: string,
     className?: string,
     onChange?: Function,
@@ -115,7 +115,7 @@ const RInput = (props: {
         id={id || `input-${name}`}
         placeholder={placeholder}
         name={name}
-        value={lazyValue}
+        value={lazyValue || (numbers ? inputFloat(value) : value)}
         onChange={onChangeInput}
         onInput={onInputInput}
         autoComplete={autoComplete}

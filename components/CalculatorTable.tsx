@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { roundAndSplitThousands } from '@/assets/ts/textUtils';
+import { calculateTable } from '@/assets/ts/calculator';
 
 import type { LoanData, TableRow } from '@/types/Calculator';
 
@@ -11,6 +12,7 @@ type Props = {
   className?: string,
   calculateData?: LoanData,
   monthly?: number,
+  initialState: TableRow[], 
 }
 
 const Table = styled.table`
@@ -42,71 +44,17 @@ const CalculatorTable = (props: Props) => {
     className,
     calculateData,
     monthly,
+    initialState,
   } = props;
 
-  const [ tableState, setTableState ] = useState<TableRow[]>([]);
+  const [ tableState, setTableState ] = useState<TableRow[]>(initialState);
 
   useEffect(() => {
     if (!calculateData || !monthly || !calculateData?.amount || !calculateData?.rate || !calculateData?.term) {
       return;
     }
 
-    let amount = calculateData.amount;
-    const result:TableRow[] = [];
-    const calcuateDate = new Date(calculateData.date.replace(/\./g, '/'));
-
-    let currentDate = calcuateDate;
-    let year = calcuateDate.getFullYear();
-    let month = calcuateDate.getMonth();
-    const day = calcuateDate.getDate();
-
-    const msToDay = 1000 * 60 * 60 * 24;
-
-    while (amount > 0) {
-      const currentYear = new Date(year, 0, 1);
-      const nextYear = new Date(year + 1, 0, 1);
-      const yearDays = (nextYear.getTime() - currentYear.getTime()) / msToDay;
-
-      if (month < 11) {
-        month++;
-      } else {
-        year++;
-        month = 0;
-      }
-
-      const nextDate = new Date(year, month, day);
-      const monthDays = (nextDate.getTime() - currentDate.getTime()) / msToDay;
-
-      const interest = amount * calculateData.rate * monthDays / yearDays / 100;
-
-      const principal = monthly < amount
-        ? monthly - interest
-        : amount;
-      const ending = monthly < amount ? ((amount - principal) * 100) / 100 : 0;
-
-      if (principal <= 0) {
-        return;
-      }
-
-      const prettyDay = day > 9 ? day : `0${day}`;
-      const prettyMonth = month + 1 > 9 ? month + 1 : `0${month + 1}`;
-
-      result.push({
-        interest,
-        principal,
-        date: `${prettyDay}.${prettyMonth}.${year}`,
-        amount: amount > monthly
-          ? monthly
-          : principal + interest,
-        ending: ending > 0
-          ? ending
-          : 0,
-      });
-
-      amount = ending;
-      currentDate = nextDate;
-    }
-
+    const result:TableRow[] = calculateTable(calculateData, monthly);
     setTableState(result);
   }, [ calculateData, setTableState, monthly ]);
 

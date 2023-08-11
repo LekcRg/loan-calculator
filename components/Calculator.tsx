@@ -1,15 +1,14 @@
-import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import type { LoanData } from '@/types/Calculator';
-
 import { roundAndSplitThousands } from '@/assets/ts/textUtils';
 
 import RInput from '@/components/ui/RInput';
 
 type Props = {
-  onChange?: Function,
-  values?: LoanData,
+  onChange: Function,
+  state: LoanData,
+  monthly: number | undefined | null,
 }
 
 const CalculatorBlock = styled.div`
@@ -45,37 +44,12 @@ const Result = styled.div`
   }
 `;
 
-const getLocalStorageState = (): LoanData | null => {
-  if (typeof window === 'undefined') {
-    return null;
-  }
-  let localStorageItem = localStorage.getItem('calcState');
-  let localStorageState:LoanData | null = null;
-
-  if (localStorageItem 
-  && localStorageItem[0] === '{'
-  && localStorageItem[localStorageItem.length - 1] === '}') {
-    const state:LoanData = JSON.parse(localStorageItem);
-
-    if (state?.amount && state?.term && state?.rate && state?.date) {
-      localStorageState = { ...state };
-    }
-  }
-
-  return localStorageState;
-};
-
-const initialState = {
-  amount: 5000000,
-  term: 10,
-  rate: 12,
-  date: '02.02.2022',
-};
-
 export default function Calculator(props: Props) {
-  const { onChange } = props;
-  const [ state, setState ] = useState<LoanData>(getLocalStorageState() || initialState);
-  const [ monthly, setMonthly ] = useState<number | undefined>();
+  const {
+    onChange,
+    state,
+    monthly,
+  } = props;
 
   const onInput = (
     value: string | number,
@@ -86,36 +60,11 @@ export default function Calculator(props: Props) {
       console.warn('onInputAmount: Empty key');
     }
 
-    setState({
+    onChange({
       ...state,
       [key]: Number(value),
     });
   };
-
-  useEffect(() => {
-    if (!state.amount || !state.term || !state.rate) {
-      return;
-    }
-
-    const monthRate = state.rate / 12 / 100;
-    const months = state.term * 12;
-
-    const monthlyPayment =
-      (state.amount * monthRate * (1 + monthRate) ** months) /
-      ((1 + monthRate) ** months - 1);
-
-    if (monthlyPayment && !isNaN(monthlyPayment)) {
-      setMonthly(monthlyPayment);
-
-      localStorage.setItem('calcState', JSON.stringify({
-        ...state,
-      }));
-
-      if (onChange) {
-        onChange(state, monthlyPayment);
-      }
-    }
-  }, [ state, onChange ]);
 
   return (
     <CalculatorBlock className="container">
@@ -175,7 +124,6 @@ export default function Calculator(props: Props) {
             </Result>
           )
       }
-      
     </CalculatorBlock>
   );
 }
