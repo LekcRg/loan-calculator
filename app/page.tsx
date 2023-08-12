@@ -1,9 +1,7 @@
 import { cookies } from 'next/headers';
 
-import { calculateMonthly, calculateTable } from '@/assets/ts/calculator';
-
 import HomePage from '@/components/pages/HomePage';
-import { LoanData } from '@/types/Calculator';
+import { LoanData, EarlyPayoff } from '@/types/Calculator';
 
 const initialState:LoanData = {
   amount: 5000000,
@@ -12,25 +10,45 @@ const initialState:LoanData = {
   date: '02.02.2022',
 };
 
-const getCookiesState = (): LoanData => {
+const getCookiesState = (): {
+  calcState: LoanData,
+  calcPayoffs: EarlyPayoff[],
+} => {
   const cookiesStore = cookies();
   const cookiesState = cookiesStore.get('calcState');
+  const cookiesPayoffs = cookiesStore.get('calcPayoffs');
+
+  let returnState;
+  let resturnPayoffs;
 
   if (cookiesState && cookiesState?.value
     && cookiesState.value[0] === '{'
     && cookiesState.value[cookiesState.value?.length - 1] === '}') {
-    return JSON.parse(cookiesState.value);
+    returnState = JSON.parse(cookiesState.value);
   }
 
-  return initialState;
+  if (cookiesPayoffs && cookiesPayoffs?.value
+    && cookiesPayoffs.value[0] === '['
+    && cookiesPayoffs.value[cookiesPayoffs.value?.length - 1] === ']') {
+    resturnPayoffs = JSON.parse(cookiesPayoffs.value);
+  }
+
+  return {
+    calcState: returnState || initialState,
+    calcPayoffs: resturnPayoffs || [],
+  };
 };
 
 export default function Home() {
-  const state = getCookiesState();
+  const cookiesValues = getCookiesState();
+
+  const state = cookiesValues.calcState;
+  const payoffs = cookiesValues.calcPayoffs;
 
   return (
     <HomePage 
       initialState={state}
+      initialPayoffs={payoffs}
     />
   );
 }

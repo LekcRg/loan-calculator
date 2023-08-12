@@ -6,13 +6,14 @@ import styled from 'styled-components';
 import { roundAndSplitThousands } from '@/assets/ts/textUtils';
 import { calculateTable } from '@/assets/ts/calculator';
 
-import type { LoanData, TableRow } from '@/types/Calculator';
+import type { LoanData, TableRow, EarlyPayoff } from '@/types/Calculator';
 
 type Props = {
   className?: string,
   calculateData?: LoanData,
   monthly?: number,
-  initialState: TableRow[], 
+  initialState: TableRow[],
+  payoffs: EarlyPayoff[],
 }
 
 const Table = styled.table`
@@ -28,6 +29,10 @@ const HeadCell = styled.th`
 const Row = styled.tr`
   background: rgba(20, 20, 20, 0);
   transition: background .2s ease;
+
+  &._payoff {
+    background-color: rgba(0, 255, 0, .2);
+  }
 
   &:hover {
     background: rgba(20, 20, 20, 1);
@@ -45,6 +50,7 @@ const CalculatorTable = (props: Props) => {
     calculateData,
     monthly,
     initialState,
+    payoffs,
   } = props;
 
   const [ tableState, setTableState ] = useState<TableRow[]>(initialState);
@@ -54,9 +60,9 @@ const CalculatorTable = (props: Props) => {
       return;
     }
 
-    const result:TableRow[] = calculateTable(calculateData, monthly);
+    const result:TableRow[] = calculateTable(calculateData, monthly, payoffs);
     setTableState(result);
-  }, [ calculateData, setTableState, monthly ]);
+  }, [ calculateData, setTableState, monthly, payoffs ]);
 
   return (
     <Table 
@@ -85,9 +91,16 @@ const CalculatorTable = (props: Props) => {
         </tr>
         {
           tableState.map((item, i) => (
-            <Row key={i}>
+            <Row
+              key={i}
+              className={item.isPayoff ? '_payoff' : ''}
+            >
               <Cell>
-                { i + 1 }
+                {
+                  !item.isPayoff && (item?.index !== undefined)
+                    ? item.index + 1 
+                    : ''
+                }
               </Cell>
               <Cell>
                 { item.date }

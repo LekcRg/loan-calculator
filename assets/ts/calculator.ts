@@ -1,4 +1,4 @@
-import type { LoanData, TableRow } from '@/types/Calculator';
+import type { LoanData, TableRow, EarlyPayoff } from '@/types/Calculator';
 
 export const calculateMonthly = (state: LoanData):number => {
   if (!state || !state.amount || !state.term || !state.rate) {
@@ -19,7 +19,7 @@ export const calculateMonthly = (state: LoanData):number => {
   return 0;
 };
 
-export const calculateTable = (calculateData: LoanData, monthly: number):TableRow[] => {
+export const calculateTable = (calculateData: LoanData, monthly: number, payoffs: EarlyPayoff[]):TableRow[] => {
   if (!calculateData || !monthly || !calculateData?.amount || !calculateData?.rate || !calculateData?.term) {
     return [];
   }
@@ -32,6 +32,7 @@ export const calculateTable = (calculateData: LoanData, monthly: number):TableRo
   let year = calcuateDate.getFullYear();
   let month = calcuateDate.getMonth();
   const day = calcuateDate.getDate();
+  let index = 0;
 
   const msToDay = 1000 * 60 * 60 * 24;
 
@@ -47,6 +48,11 @@ export const calculateTable = (calculateData: LoanData, monthly: number):TableRo
       month = 0;
     }
 
+    const payoff = payoffs.find(item => {
+      return item.month === month && item.year === year;
+    });
+    const payoffAmount = payoff ? payoff.amount : 0;
+
     const nextDate = new Date(year, month, day);
     const monthDays = (nextDate.getTime() - currentDate.getTime()) / msToDay;
 
@@ -55,7 +61,7 @@ export const calculateTable = (calculateData: LoanData, monthly: number):TableRo
     const principal = monthly < amount
       ? monthly - interest
       : amount;
-    const ending = monthly < amount ? ((amount - principal) * 100) / 100 : 0;
+    let ending = monthly < amount ? ((amount - principal) * 100) / 100 : 0;
 
     if (principal <= 0) {
       return [];
@@ -65,9 +71,11 @@ export const calculateTable = (calculateData: LoanData, monthly: number):TableRo
     const prettyMonth = month + 1 > 9 ? month + 1 : `0${month + 1}`;
 
     result.push({
+      index: index++,
       interest,
       principal,
       date: `${prettyDay}.${prettyMonth}.${year}`,
+      isPayoff: false,
       amount: amount > monthly
         ? monthly
         : principal + interest,
@@ -75,6 +83,19 @@ export const calculateTable = (calculateData: LoanData, monthly: number):TableRo
         ? ending
         : 0,
     });
+
+    if (payoff) {
+      ending = ending - payoffAmount;
+
+      result.push({
+        interest: 0,
+        principal: payoffAmount,
+        date: `${prettyDay}.${prettyMonth}.${year}`,
+        isPayoff: true,
+        amount: payoffAmount,
+        ending: ending,
+      });
+    }
 
     amount = ending;
     currentDate = nextDate;
@@ -92,11 +113,9 @@ export const initialCalculateState = (state?: LoanData) => state || {
 
 export const initialMonthly = (state?: LoanData) => calculateMonthly(initialCalculateState(state));
 
-export const initialTableState = (state?: LoanData) => calculateTable(initialCalculateState(state), initialMonthly(state));
+export const initialTableState = (state?: LoanData) => calculateTable(initialCalculateState(state), initialMonthly(state), []);
 
 export const getInitialData = (state?: LoanData) => {
-  
-  
   return {
     monthly: 0,
     calculateState: 0,
