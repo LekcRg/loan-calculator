@@ -4,6 +4,7 @@ import type { LoanData } from '@/types/Calculator';
 import { roundAndSplitThousands } from '@/assets/ts/textUtils';
 
 import RInput from '@/components/ui/RInput';
+import RDatePicker from '@/components/ui/RDatePicker';
 
 type Props = {
   onChange: Function,
@@ -54,16 +55,20 @@ export default function Calculator(props: Props) {
   const onInput = (
     value: string | number,
     key: string,
-    ev: React.ChangeEvent<HTMLInputElement>,
   ) => {
     if (!key) {
       console.warn('onInputAmount: Empty key');
     }
 
-    onChange({
+    const newState = {
       ...state,
-      [key]: Number(value),
-    });
+      [key]: value,
+    };
+
+    if (JSON.stringify(state) !== JSON.stringify(newState)) {
+      onChange({ ...newState });
+    }
+
   };
 
   return (
@@ -99,14 +104,11 @@ export default function Calculator(props: Props) {
           onInput={onInput}
         />
 
-        <Input
+        <RDatePicker
           value={state.date}
-          label="Date (mm.dd.yyyy)"
-          placeholder="Date"
+          label="Date"
           name="date"
-          autoComplete="off"
-          disabled
-          onInput={onInput}
+          onChange={onInput}
         />
       </Wrapper>
 

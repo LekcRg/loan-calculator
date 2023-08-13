@@ -3,6 +3,20 @@ import { useState, useEffect } from 'react';
 
 import { inputFloat } from '@/assets/ts/textUtils';
 
+type Props = {
+  placeholder?: string,
+  name?: string,
+  label?: string,
+  numbers?: boolean,
+  disabled?: boolean,
+  value: string | number,
+  autoComplete?: string,
+  className?: string,
+  onChange?: Function,
+  onInput?: Function,
+  id?: string,
+};
+
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -29,19 +43,7 @@ const Input = styled.input`
   }
 `;
 
-const RInput = (props: {
-    placeholder?: string,
-    name?: string,
-    label?: string,
-    numbers?: boolean,
-    disabled?: boolean,
-    value: string | number,
-    autoComplete?: string,
-    className?: string,
-    onChange?: Function,
-    onInput?: Function,
-    id?: string,
-}) => {
+const RInput = (props: Props) => {
   const {
     placeholder,
     name,

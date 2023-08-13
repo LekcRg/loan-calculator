@@ -26,7 +26,7 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
 
   let amount = calculateData.amount;
   const result:TableRow[] = [];
-  const calcuateDate = new Date(calculateData.date.replace(/\./g, '/'));
+  const calcuateDate = new Date(calculateData.date);
 
   let currentDate = calcuateDate;
   let year = calcuateDate.getFullYear();
