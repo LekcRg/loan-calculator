@@ -3,11 +3,11 @@ import { cookies } from 'next/headers';
 import HomePage from '@/components/pages/HomePage';
 import { LoanData, EarlyPayoff } from '@/types/Calculator';
 
-const initialState:LoanData = {
+const initialState: LoanData = {
   amount: 5000000,
   term: 10,
   rate: 12,
-  date: '02.02.2022',
+  date: '2022-02-02',
 };
 
 const getCookiesState = (): {

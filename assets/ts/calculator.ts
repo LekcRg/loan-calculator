@@ -26,19 +26,21 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
 
   let amount = calculateData.amount;
   const result:TableRow[] = [];
-  const calcuateDate = new Date(calculateData.date);
+  const parsedDate = calculateData.date.split('-');
+  const UTCDate = Date.UTC(Number(parsedDate[0]), Number(parsedDate[1]) - 1, Number(parsedDate[2]));
+  const calcuateDate = new Date(UTCDate);
 
   let currentDate = calcuateDate;
-  let year = calcuateDate.getFullYear();
-  let month = calcuateDate.getMonth();
-  const day = calcuateDate.getDate();
+  let year = calcuateDate.getUTCFullYear();
+  let month = calcuateDate.getUTCMonth();
+  const day = calcuateDate.getUTCDate();
   let index = 0;
 
   const msToDay = 1000 * 60 * 60 * 24;
 
   while (amount > 0) {
-    const currentYear = new Date(year, 0, 1);
-    const nextYear = new Date(year + 1, 0, 1);
+    const currentYear = new Date(Date.UTC(year, 0, 1));
+    const nextYear = new Date(Date.UTC(year + 1, 0, 1));
     const yearDays = (nextYear.getTime() - currentYear.getTime()) / msToDay;
 
     if (month < 11) {
@@ -53,7 +55,7 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
     });
     const payoffAmount = payoff ? payoff.amount : 0;
 
-    const nextDate = new Date(year, month, day);
+    const nextDate = new Date(Date.UTC(year, month, day));
     const monthDays = (nextDate.getTime() - currentDate.getTime()) / msToDay;
 
     const interest = amount * calculateData.rate * monthDays / yearDays / 100;

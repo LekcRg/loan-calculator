@@ -76,7 +76,15 @@ const RDatePicker = (props: Props) => {
     onChange,
   } = props;
 
-  const date = value ? new Date(value) : new Date();
+  const parsedDate = value ? value.split('-') : null;
+  const UTCDate = parsedDate?.length 
+    ? Date.UTC(Number(parsedDate[0]), Number(parsedDate[1]) - 1, Number(parsedDate[2]))
+    : null;
+
+  const now = new Date();
+  const nowUTC = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+
+  const date = UTCDate ? new Date(UTCDate) : new Date(nowUTC);
 
   const [ activeCalendar, changeActiveCalendar ] = useState<ActiveCalendar>('date');
   const [ selectedDates, onDatesChange ] = useState<Date[]>([ date ]);
@@ -136,16 +144,21 @@ const RDatePicker = (props: Props) => {
   };
 
   const currentDate = selectedDates[0];
-  let day = currentDate.getDate();
-  let month = currentDate.getMonth() + 1;
-  const year = currentDate.getFullYear();
+  let day = currentDate.getUTCDate();
+  let month = currentDate.getUTCMonth() + 1;
+  const year = currentDate.getUTCFullYear();
   const prettyDay = day > 9 ? day : `0${day}`;
   const prettyMonth = month > 9 ? month : `0${month}`;
   const prettyDate = `${prettyDay}.${prettyMonth}.${year}`;
 
   useEffect(() => {
     if (onChange) {
-      onChange(selectedDates[0], name);
+      const date = selectedDates[0];
+      const day = date.getUTCDate();
+      const month = date.getUTCMonth() + 1;
+      const year = date.getUTCFullYear();
+
+      onChange(`${year}-${month}-${day}`, name);
     }
   }, [ selectedDates, onChange, name ]);
 
@@ -172,33 +185,35 @@ const RDatePicker = (props: Props) => {
         { prettyDate }
       </Button>
 
-      <DatePicker className={isShow ? '_visible' : ''}>
-        <RDatePickerHeader
-          prevProps={() => headerNextProps()}
-          nextProps={() => headerPrevProps()}
-          calendars={calendars}
-          activeCalendar={activeCalendar}
-          changeActiveCalendar={changeActiveCalendar}
-          title={title}
-        />
-        {
-          activeCalendar === 'date' ?
-            <RDatePickerCalendar
-              datePickerHooks={datePickerHooks}
-            />
-            : ''
-        }
+      {isShow ? (
+        <DatePicker className="_visible">
+          <RDatePickerHeader
+            prevProps={() => headerNextProps()}
+            nextProps={() => headerPrevProps()}
+            calendars={calendars}
+            activeCalendar={activeCalendar}
+            changeActiveCalendar={changeActiveCalendar}
+            title={title}
+          />
+          {
+            activeCalendar === 'date' ?
+              <RDatePickerCalendar
+                datePickerHooks={datePickerHooks}
+              />
+              : ''
+          }
 
-        {
-          activeCalendar === 'month' || activeCalendar === 'year' ?
-            <RDatePickerInner
-              datePickerHooks={datePickerHooks}
-              activeCalendar={activeCalendar}
-              changeActiveCalendar={changeActiveCalendar}
-            />
-            : ''
-        }
-      </DatePicker>
+          {
+            activeCalendar === 'month' || activeCalendar === 'year' ?
+              <RDatePickerInner
+                datePickerHooks={datePickerHooks}
+                activeCalendar={activeCalendar}
+                changeActiveCalendar={changeActiveCalendar}
+              />
+              : ''
+          }
+        </DatePicker>
+      ) : ''}
     </Wrapper>
   );
 };
