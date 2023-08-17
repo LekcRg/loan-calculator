@@ -121,19 +121,19 @@ const RDatePicker = (props: Props) => {
 
   const headerNextProps = () => {
     if (activeCalendar === 'date') {
-      return subtractOffset({ months: 1 });
+      return addOffset({ months: 1 });
     } else if (activeCalendar === 'month') {
-      return subtractOffset({ years: 1 });
+      return addOffset({ years: 1 });
     } else if (activeCalendar === 'year') {
       return nextYearsButton();
     }
   };
-
+  
   const headerPrevProps = () => {
     if (activeCalendar === 'date') {
-      return addOffset({ months: 1 });
+      return subtractOffset({ months: 1 });
     } else if (activeCalendar === 'month') {
-      return addOffset({ years: 1 });
+      return subtractOffset({ years: 1 });
     } else if (activeCalendar === 'year') {
       return previousYearsButton();
     }
@@ -143,10 +143,9 @@ const RDatePicker = (props: Props) => {
     changeIsShow(false);
   };
 
-  const currentDate = selectedDates[0];
-  let day = currentDate.getUTCDate();
-  let month = currentDate.getUTCMonth() + 1;
-  const year = currentDate.getUTCFullYear();
+  let day = date.getUTCDate();
+  let month = date.getUTCMonth() + 1;
+  const year = date.getUTCFullYear();
   const prettyDay = day > 9 ? day : `0${day}`;
   const prettyMonth = month > 9 ? month : `0${month}`;
   const prettyDate = `${prettyDay}.${prettyMonth}.${year}`;
@@ -154,9 +153,10 @@ const RDatePicker = (props: Props) => {
   useEffect(() => {
     if (onChange) {
       const date = selectedDates[0];
-      const day = date.getUTCDate();
-      const month = date.getUTCMonth() + 1;
-      const year = date.getUTCFullYear();
+
+      const day = date.getDate();
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
 
       onChange(`${year}-${month}-${day}`, name);
     }
@@ -188,8 +188,8 @@ const RDatePicker = (props: Props) => {
       {isShow ? (
         <DatePicker className="_visible">
           <RDatePickerHeader
-            prevProps={() => headerNextProps()}
-            nextProps={() => headerPrevProps()}
+            prevProps={() => headerPrevProps()}
+            nextProps={() => headerNextProps()}
             calendars={calendars}
             activeCalendar={activeCalendar}
             changeActiveCalendar={changeActiveCalendar}
