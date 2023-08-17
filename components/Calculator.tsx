@@ -5,6 +5,7 @@ import { roundAndSplitThousands } from '@/assets/ts/textUtils';
 
 import RInput from '@/components/ui/RInput';
 import RDatePicker from '@/components/ui/RDatePicker';
+import { RNumber } from '@/components/ui/RNumber';
 
 type Props = {
   onChange: Function,
@@ -117,7 +118,8 @@ export default function Calculator(props: Props) {
           (
             <Result>
               Monthly payments:{' '}
-              <span>{roundAndSplitThousands(Math.round(monthly * 100) / 100)}</span>
+              {/* <span>{roundAndSplitThousands(Math.round(monthly * 100) / 100)}</span> */}
+              <RNumber num={monthly}/>
             </Result>
           )
           : (
