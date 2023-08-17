@@ -50,8 +50,12 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
       month = 0;
     }
 
-    const payoff = payoffs.find(item => {
-      return item.month === month && item.year === year;
+    const payoff = payoffs.find(({ date }) => {
+      const dateArr = date.split('-');
+      const payoffMonth = Number(dateArr[1]) - 1;
+      const payoffYear = Number(dateArr[0]);
+
+      return payoffMonth === month && payoffYear === year;
     });
     const payoffAmount = payoff ? payoff.amount : 0;
 

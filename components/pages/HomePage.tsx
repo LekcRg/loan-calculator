@@ -8,7 +8,7 @@ import type { LoanData, EarlyPayoff } from '@/types/Calculator';
 import { calculateMonthly, calculateTable } from '@/assets/ts/calculator';
 
 import CalculatorComponent from '@/components/Calculator';
-import CalculatorEarlyPayoff from '../CalculatorEarlyPayoff';
+import CalculatorEarlyPayoffComponent from '../CalculatorEarlyPayoff';
 import CalaculatorTable from '@/components/CalculatorTable';
 
 type Props = {
@@ -24,6 +24,10 @@ const MainBlock = styled.main`
 `;
 
 const Calculator = styled(CalculatorComponent)`
+  margin-bottom: 20px;
+`;
+
+const CalculatorEarlyPayoff = styled(CalculatorEarlyPayoffComponent)`
   margin-bottom: 20px;
 `;
 
@@ -58,6 +62,7 @@ export default function Home(props: Props) {
         onChange={onChangeCalculator}
       />
       <CalculatorEarlyPayoff
+        date={calculatorState.date}
         payoffs={payoffs}
         onChange={onChangePayoffs}
       />

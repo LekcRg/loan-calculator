@@ -44,7 +44,7 @@ const RDatePickerInner = (props: Props) => {
             selected={dbYear.selected}
             key={dbYear.$date.toDateString()}
             buttonProps={yearButton(dbYear, {
-              onClick: () => changeActiveCalendar(afterSelect),
+              onClick: () => changeActiveCalendar(afterSelect, dbYear.$date),
             })}
           >
             { dbYear.year }
@@ -55,7 +55,7 @@ const RDatePickerInner = (props: Props) => {
               selected={dbMonth.selected}
               key={dbMonth.$date.toDateString()}
               buttonProps={monthButton(dbMonth, {
-                onClick: () => changeActiveCalendar(afterSelect),
+                onClick: () => changeActiveCalendar(afterSelect, dbMonth.$date),
               })}
             >
               { dbMonth.month }

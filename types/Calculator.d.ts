@@ -17,6 +17,5 @@ export type TableRow = {
 
 export type EarlyPayoff = {
   amount: number,
-  month: number,
-  year: number,
+  date: string,
 }

@@ -117,9 +117,14 @@ const GlobalStyles = createGlobalStyle`
 
   .container {
     width: 100%;
-    max-width: 1232px;
-    margin: 0 auto;
-    padding: 0 16px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+
+    @media screen and (max-width: 1232px) {
+      padding-right: 16px;
+      padding-left: 16px;
+    }
   }
 `;
 

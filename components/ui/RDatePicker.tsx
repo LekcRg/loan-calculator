@@ -14,6 +14,7 @@ type Props = {
   label?: string,
   value?: string,
   onChange?: Function,
+  type?: ActiveCalendar
 }
 
 const Wrapper = styled.div`
@@ -74,6 +75,7 @@ const RDatePicker = (props: Props) => {
     value,
     name,
     onChange,
+    type = 'date',
   } = props;
 
   const parsedDate = value ? value.split('-') : null;
@@ -86,7 +88,7 @@ const RDatePicker = (props: Props) => {
 
   const date = UTCDate ? new Date(UTCDate) : new Date(nowUTC);
 
-  const [ activeCalendar, changeActiveCalendar ] = useState<ActiveCalendar>('date');
+  const [ activeCalendar, changeActiveCalendar ] = useState<ActiveCalendar>(type);
   const [ selectedDates, onDatesChange ] = useState<Date[]>([ date ]);
   const [ offsetDate, onOffsetChange ] = useState<Date>(date);
   const [ isShow, changeIsShow ] = useState<boolean>(false);
@@ -143,6 +145,18 @@ const RDatePicker = (props: Props) => {
     changeIsShow(false);
   };
 
+  const onChangeCalendar = (nextActiveCalendar: ActiveCalendar, newDate: Date): void => {
+    if (type !== activeCalendar) {
+      changeActiveCalendar(nextActiveCalendar);
+    } else {
+      const year = newDate.getUTCFullYear();
+      const month = newDate.getUTCMonth() + 1;
+      const day = date.getUTCDate();
+
+      onDatesChange([ new Date(Date.UTC(year, month, day)) ]);
+    }
+  };
+
   let day = date.getUTCDate();
   let month = date.getUTCMonth() + 1;
   const year = date.getUTCFullYear();
@@ -154,13 +168,19 @@ const RDatePicker = (props: Props) => {
     if (onChange) {
       const date = selectedDates[0];
 
-      const day = date.getDate();
+      const day = selectedDates[0].getDate();
       const month = date.getMonth() + 1;
       const year = date.getFullYear();
 
+      const newValue = `${year}-${month}-${day}`;
+
+      if (value === newValue) {
+        return;
+      }
+
       onChange(`${year}-${month}-${day}`, name);
     }
-  }, [ selectedDates, onChange, name ]);
+  }, [ selectedDates, onChange, name, value ]);
 
   return (
     <Wrapper>
@@ -195,6 +215,7 @@ const RDatePicker = (props: Props) => {
             changeActiveCalendar={changeActiveCalendar}
             title={title}
           />
+
           {
             activeCalendar === 'date' ?
               <RDatePickerCalendar
@@ -208,7 +229,7 @@ const RDatePicker = (props: Props) => {
               <RDatePickerInner
                 datePickerHooks={datePickerHooks}
                 activeCalendar={activeCalendar}
-                changeActiveCalendar={changeActiveCalendar}
+                changeActiveCalendar={onChangeCalendar}
               />
               : ''
           }

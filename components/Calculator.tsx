@@ -11,6 +11,7 @@ type Props = {
   onChange: Function,
   state: LoanData,
   monthly: number | undefined | null,
+  className?: string,
 }
 
 const CalculatorBlock = styled.div`
@@ -51,6 +52,7 @@ export default function Calculator(props: Props) {
     onChange,
     state,
     monthly,
+    className,
   } = props;
 
   const onInput = (
@@ -73,7 +75,7 @@ export default function Calculator(props: Props) {
   };
 
   return (
-    <CalculatorBlock className="container">
+    <CalculatorBlock className={`container ${className}`}>
       <Wrapper>
         <Input
           numbers
