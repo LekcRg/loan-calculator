@@ -1,4 +1,5 @@
 import type { LoanData, TableRow, EarlyPayoff } from '@/types/Calculator';
+import { dateUTC, getPrettyDate, parseStringDate, stringToDate } from './dateUtils';
 
 export const calculateMonthly = (state: LoanData):number => {
   if (!state || !state.amount || !state.term || !state.rate) {
@@ -26,9 +27,11 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
 
   let amount = calculateData.amount;
   const result:TableRow[] = [];
-  const parsedDate = calculateData.date.split('-');
-  const UTCDate = Date.UTC(Number(parsedDate[0]), Number(parsedDate[1]) - 1, Number(parsedDate[2]));
-  const calcuateDate = new Date(UTCDate);
+  const calcuateDate = stringToDate(calculateData.date);
+
+  if (!calcuateDate) {
+    return result;
+  }
 
   let currentDate = calcuateDate;
   let year = calcuateDate.getUTCFullYear();
@@ -39,8 +42,8 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
   const msToDay = 1000 * 60 * 60 * 24;
 
   while (amount > 0) {
-    const currentYear = new Date(Date.UTC(year, 0, 1));
-    const nextYear = new Date(Date.UTC(year + 1, 0, 1));
+    const currentYear = dateUTC(year, 0, 1);
+    const nextYear = dateUTC(year + 1, 0, 1);
     const yearDays = (nextYear.getTime() - currentYear.getTime()) / msToDay;
 
     if (month < 11) {
@@ -51,15 +54,13 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
     }
 
     const payoff = payoffs.find(({ date }) => {
-      const dateArr = date.split('-');
-      const payoffMonth = Number(dateArr[1]) - 1;
-      const payoffYear = Number(dateArr[0]);
+      const parsedDate = parseStringDate(date);
 
-      return payoffMonth === month && payoffYear === year;
+      return parsedDate?.month === month && parsedDate?.year === year;
     });
     const payoffAmount = payoff ? payoff.amount : 0;
 
-    const nextDate = new Date(Date.UTC(year, month, day));
+    const nextDate = dateUTC(year, month, day);
     const monthDays = (nextDate.getTime() - currentDate.getTime()) / msToDay;
 
     const interest = amount * calculateData.rate * monthDays / yearDays / 100;
@@ -73,14 +74,15 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
       return [];
     }
 
-    const prettyDay = day > 9 ? day : `0${day}`;
-    const prettyMonth = month + 1 > 9 ? month + 1 : `0${month + 1}`;
+    const baseItem = {
+      date: getPrettyDate(nextDate),
+    };
 
     result.push({
+      ...baseItem,
       index: index++,
       interest,
       principal,
-      date: `${prettyDay}.${prettyMonth}.${year}`,
       isPayoff: false,
       amount: amount > monthly
         ? monthly
@@ -94,9 +96,9 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
       ending = ending - payoffAmount;
 
       result.push({
+        ...baseItem,
         interest: 0,
         principal: payoffAmount,
-        date: `${prettyDay}.${prettyMonth}.${year}`,
         isPayoff: true,
         amount: payoffAmount,
         ending: ending,
@@ -115,16 +117,4 @@ export const initialCalculateState = (state?: LoanData) => state || {
   term: 10,
   rate: 12,
   date: '02.02.2022',
-};
-
-export const initialMonthly = (state?: LoanData) => calculateMonthly(initialCalculateState(state));
-
-export const initialTableState = (state?: LoanData) => calculateTable(initialCalculateState(state), initialMonthly(state), []);
-
-export const getInitialData = (state?: LoanData) => {
-  return {
-    monthly: 0,
-    calculateState: 0,
-    tableState: 0,
-  };
 };

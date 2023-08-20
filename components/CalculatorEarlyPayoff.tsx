@@ -64,6 +64,7 @@ const CalculatorEarlyPayoff = (props: Props) => {
   } = props;
 
   const [ payoffs, setPayoffs ] = useState<EarlyPayoff[]>(props.payoffs);
+  const [ id, setId ] = useState<number>(payoffs?.length ? payoffs[payoffs.length - 1].id + 1 : 1);
 
   const onAddEarlyPayoff = (ev: React.MouseEvent<HTMLButtonElement>) => {
     let nextPayoffDate = addMonth(payoffs?.length ? payoffs[payoffs.length - 1].date : date);
@@ -73,8 +74,11 @@ const CalculatorEarlyPayoff = (props: Props) => {
       {
         amount: 0,
         date: nextPayoffDate,
+        id,
       },
     ]);
+
+    setId(id + 1);
   };
 
   const onClickRemove = (index: number) => {
@@ -90,24 +94,6 @@ const CalculatorEarlyPayoff = (props: Props) => {
       key: nameArr[1],
       index: Number(nameArr[2]),
     };
-
-    if (nameObj.key === 'date' && typeof value === 'string') {
-      const calcDateArr = date.split('-');
-      const valueDateArr = value.split('-');
-
-      valueDateArr[2] = calcDateArr[2];
-
-      setPayoffs([
-        ...[ ...payoffs ].splice(0, nameObj.index),
-        {
-          ...payoffs[nameObj.index],
-          [nameObj.key]: valueDateArr.join('-'),
-        },
-        ...[ ...payoffs ].splice(nameObj.index + 1),
-      ]);
-
-      return;
-    }
 
     setPayoffs([
       ...[ ...payoffs ].splice(0, nameObj.index),
@@ -129,7 +115,7 @@ const CalculatorEarlyPayoff = (props: Props) => {
         {
           payoffs.map((item, i: number) => (
             <PayoffItem
-              key={`${i}-${item.date}-${item.amount}`}
+              key={item.id}
             >
               <Title>
                 Early payoff #{i + 1}

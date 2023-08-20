@@ -8,6 +8,7 @@ import type { ActiveCalendar } from '@/types/RDatePicker';
 import RDatePickerHeader from '@/components/ui/RDatePicker/RDatePickerHeader';
 import RDatePickerCalendar from '@/components/ui/RDatePicker/RDatePickerCalendar';
 import RDatePickerInner from '@/components/ui/RDatePicker/RDatePickerInner';
+import { dateNowUTC, dateToString, getPrettyDate, stringToDate } from '@/assets/ts/dateUtils';
 
 type Props = {
   name: string,
@@ -78,15 +79,7 @@ const RDatePicker = (props: Props) => {
     type = 'date',
   } = props;
 
-  const parsedDate = value ? value.split('-') : null;
-  const UTCDate = parsedDate?.length 
-    ? Date.UTC(Number(parsedDate[0]), Number(parsedDate[1]) - 1, Number(parsedDate[2]))
-    : null;
-
-  const now = new Date();
-  const nowUTC = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
-
-  const date = UTCDate ? new Date(UTCDate) : new Date(nowUTC);
+  let date = stringToDate(value || '') || dateNowUTC();
 
   const [ activeCalendar, changeActiveCalendar ] = useState<ActiveCalendar>(type);
   const [ selectedDates, onDatesChange ] = useState<Date[]>([ date ]);
@@ -157,28 +150,17 @@ const RDatePicker = (props: Props) => {
     }
   };
 
-  let day = date.getUTCDate();
-  let month = date.getUTCMonth() + 1;
-  const year = date.getUTCFullYear();
-  const prettyDay = day > 9 ? day : `0${day}`;
-  const prettyMonth = month > 9 ? month : `0${month}`;
-  const prettyDate = `${prettyDay}.${prettyMonth}.${year}`;
+  const prettyDate = getPrettyDate(date);
 
   useEffect(() => {
     if (onChange) {
-      const date = selectedDates[0];
-
-      const day = selectedDates[0].getDate();
-      const month = date.getMonth() + 1;
-      const year = date.getFullYear();
-
-      const newValue = `${year}-${month}-${day}`;
+      const newValue = dateToString(selectedDates[0]);
 
       if (value === newValue) {
         return;
       }
 
-      onChange(`${year}-${month}-${day}`, name);
+      onChange(newValue, name);
     }
   }, [ selectedDates, onChange, name, value ]);
 

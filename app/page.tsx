@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 
 import HomePage from '@/components/pages/HomePage';
-import { LoanData, EarlyPayoff } from '@/types/Calculator';
+import type { LoanData, EarlyPayoff } from '@/types/Calculator';
 
 const initialState: LoanData = {
   amount: 5000000,
