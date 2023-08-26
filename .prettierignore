@@ -29,8 +29,3 @@ yarn-error.log*
 .env.production.local
 
 # JSON and lint configs
-&.json
-.prettierrc
-.eslintrc
-.eslintrc.js
-.stylelintrc
