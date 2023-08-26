@@ -1,13 +1,13 @@
 import type { LoanData, TableRow, EarlyPayoff } from '@/types/Calculator';
 import { dateUTC, getPrettyDate, parseStringDate, stringToDate } from './dateUtils';
 
-export const calculateMonthly = (state: LoanData):number => {
+export const calculateMonthly = (state: LoanData, isMonth = false): number => {
   if (!state || !state.amount || !state.term || !state.rate) {
     return 0;
   }
 
   const monthRate = state.rate / 12 / 100;
-  const months = state.term * 12;
+  const months = isMonth ? state.term : state.term * 12;
 
   const monthlyPayment =
     (state.amount * monthRate * (1 + monthRate) ** months) /
@@ -20,13 +20,13 @@ export const calculateMonthly = (state: LoanData):number => {
   return 0;
 };
 
-export const calculateTable = (calculateData: LoanData, monthly: number, payoffs: EarlyPayoff[]):TableRow[] => {
+export const calculateTable = (calculateData: LoanData, monthly: number, payoffs: EarlyPayoff[]): TableRow[] => {
   if (!calculateData || !monthly || !calculateData?.amount || !calculateData?.rate || !calculateData?.term) {
     return [];
   }
 
   let amount = calculateData.amount;
-  const result:TableRow[] = [];
+  const result: TableRow[] = [];
   const calcuateDate = stringToDate(calculateData.date);
 
   if (!calcuateDate) {
@@ -40,6 +40,9 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
   let index = 0;
 
   const msToDay = 1000 * 60 * 60 * 24;
+
+  let newMonthly = monthly;
+  let termMonth = calculateData.term * 12;
 
   while (amount > 0) {
     const currentYear = dateUTC(year, 0, 1);
@@ -65,10 +68,10 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
 
     const interest = amount * calculateData.rate * monthDays / yearDays / 100;
 
-    const principal = monthly < amount
-      ? monthly - interest
+    const principal = newMonthly < amount
+      ? newMonthly - interest
       : amount;
-    let ending = monthly < amount ? ((amount - principal) * 100) / 100 : 0;
+    let ending = newMonthly < amount ? ((amount - principal) * 100) / 100 : 0;
 
     if (principal <= 0) {
       return [];
@@ -84,8 +87,8 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
       interest,
       principal,
       isPayoff: false,
-      amount: amount > monthly
-        ? monthly
+      amount: amount > newMonthly
+        ? newMonthly
         : principal + interest,
       ending: ending > 0
         ? ending
@@ -103,6 +106,14 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
         amount: payoffAmount,
         ending: ending,
       });
+
+      termMonth -= index;
+
+      newMonthly = (payoff && payoff.type === 'loan') ? calculateMonthly({
+        ...calculateData,
+        term: termMonth,
+        amount: ending,
+      }, true) : 0;
     }
 
     amount = ending;

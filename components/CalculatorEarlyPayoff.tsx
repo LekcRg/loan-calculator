@@ -1,4 +1,4 @@
-import { useState, useEffect, MouseEvent } from 'react';
+import { useState, useEffect, MouseEvent, ChangeEvent } from 'react';
 import styled from 'styled-components';
 
 import type { EarlyPayoff } from '@/types/Calculator';
@@ -43,6 +43,20 @@ const Button = styled(RButton)`
   margin-top: 18px;
 `;
 
+const Select = styled.select`
+  display: block;
+  margin-top: 12px;
+  width: 100%;
+  border: none;
+  outline: none;
+  background: #3b3b3b;
+  font-size: 18px;
+  color: #ddd;
+  padding: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+`;
+
 const addMonth = (toAddDate: string) => {
   const newDate: (string | number)[] = toAddDate.split('-');
   const month = Number(newDate[1]);
@@ -75,6 +89,7 @@ const CalculatorEarlyPayoff = (props: Props) => {
         amount: 0,
         date: nextPayoffDate,
         id,
+        type: 'payment',
       },
     ]);
 
@@ -138,6 +153,18 @@ const CalculatorEarlyPayoff = (props: Props) => {
                 label="Date"
                 onChange={onInput}
               />
+
+              <Select
+                value={item.type}
+                onChange={(ev: ChangeEvent<HTMLSelectElement>) => onInput(ev.target.value, `payoff-type-${i}`)}
+              >
+                <option value="payment">
+                  Payment
+                </option>
+                <option value="loan">
+                  Loan
+                </option>
+              </Select>
 
               <Button onClick={(ev: MouseEvent<HTMLButtonElement>) => onClickRemove(i)}>
                 Remove
