@@ -18,6 +18,6 @@ export type TableRow = {
 export type EarlyPayoff = {
   amount: number,
   date: string,
-  type: 'payment' | 'loan',
+  type: 'payment' | 'term',
   id: number
 }

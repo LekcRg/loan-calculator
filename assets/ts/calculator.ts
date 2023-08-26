@@ -107,13 +107,15 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
         ending: ending,
       });
 
-      termMonth -= index;
+      if (payoff.type === 'payment') {
+        termMonth -= index;
 
-      newMonthly = (payoff && payoff.type === 'loan') ? calculateMonthly({
-        ...calculateData,
-        term: termMonth,
-        amount: ending,
-      }, true) : 0;
+        newMonthly = calculateMonthly({
+          ...calculateData,
+          term: termMonth,
+          amount: ending,
+        }, true);
+      }
     }
 
     amount = ending;

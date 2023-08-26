@@ -161,8 +161,8 @@ const CalculatorEarlyPayoff = (props: Props) => {
                 <option value="payment">
                   Payment
                 </option>
-                <option value="loan">
-                  Loan
+                <option value="term">
+                  Term
                 </option>
               </Select>
 
