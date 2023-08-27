@@ -38,6 +38,7 @@ const RSelect = (props: Props) => {
     label,
     name,
     value,
+    options,
     onChange,
   } = props;
 
@@ -60,12 +61,16 @@ const RSelect = (props: Props) => {
         value={value}
         onChange={onChangeSelect}
       >
-        <option value="payment">
-                  Payment
-        </option>
-        <option value="term">
-                  Term
-        </option>
+        {
+          options.map((option, i) => (
+            <option
+              key={i}
+              value={option.value}
+            >
+              {option.label}
+            </option>
+          ))
+        }
       </Select>
     </Wrapper>
   );
