@@ -124,10 +124,3 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
 
   return result;
 };
-
-export const initialCalculateState = (state?: LoanData) => state || {
-  amount: 5000000,
-  term: 10,
-  rate: 12,
-  date: '02.02.2022',
-};

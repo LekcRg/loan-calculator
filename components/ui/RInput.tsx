@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 
 import { inputFloat } from '@/assets/ts/textUtils';
+import RLabel from './RLabel';
 
 type Props = {
   placeholder?: string,
@@ -20,12 +21,6 @@ type Props = {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-`;
-
-const Label = styled.label`
-  font-size: 16px;
-  color: #ddd;
-  margin-bottom: 5px;
 `;
 
 const Input = styled.input`
@@ -107,9 +102,9 @@ const RInput = (props: Props) => {
     >
       {
         label ? 
-          <Label htmlFor={id || `input-${name}`}>
+          <RLabel htmlFor={id || `input-${name}`}>
             {label}
-          </Label>
+          </RLabel>
           : null
       }
       <Input 

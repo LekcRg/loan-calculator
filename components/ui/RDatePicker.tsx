@@ -5,6 +5,7 @@ import { useDatePicker } from '@rehookify/datepicker';
 
 import type { ActiveCalendar } from '@/types/RDatePicker';
 
+import RLabel from './RLabel';
 import RDatePickerHeader from '@/components/ui/RDatePicker/RDatePickerHeader';
 import RDatePickerCalendar from '@/components/ui/RDatePicker/RDatePickerCalendar';
 import RDatePickerInner from '@/components/ui/RDatePicker/RDatePickerInner';
@@ -15,7 +16,8 @@ type Props = {
   label?: string,
   value?: string,
   onChange?: Function,
-  type?: ActiveCalendar
+  type?: ActiveCalendar,
+  className?: string,
 }
 
 const Wrapper = styled.div`
@@ -33,12 +35,6 @@ const Overlay = styled.div`
   &._visible {
     pointer-events: all;
   }
-`;
-
-const Label = styled.div`
-  font-size: 16px;
-  color: #ddd;
-  margin-bottom: 5px;
 `;
 
 const Button = styled.button`
@@ -76,6 +72,7 @@ const RDatePicker = (props: Props) => {
     value,
     name,
     onChange,
+    className,
     type = 'date',
   } = props;
 
@@ -165,7 +162,7 @@ const RDatePicker = (props: Props) => {
   }, [ selectedDates, onChange, name, value ]);
 
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <Overlay
         className={isShow ? '_visible' : ''}
         onClick={clickOverlay}
@@ -173,11 +170,11 @@ const RDatePicker = (props: Props) => {
 
       {
         label ?
-          <Label
+          <RLabel
             onClick={() => changeIsShow(!isShow)}
           >
             { label }
-          </Label>
+          </RLabel>
           : ''
       }
 

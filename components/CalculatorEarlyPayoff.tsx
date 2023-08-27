@@ -6,6 +6,7 @@ import type { EarlyPayoff } from '@/types/Calculator';
 import RInput from '@/components/ui/RInput';
 import RButton from '@/components/ui/RButton';
 import RDatePicker from '@/components/ui/RDatePicker';
+import RSelect from '@/components/ui/RSelect';
 
 type Props = {
   onChange: Function,
@@ -28,6 +29,10 @@ const Input = styled(RInput)`
   margin-bottom: 12px;
 `;
 
+const DatePicker = styled(RDatePicker)`
+  margin-bottom: 12px;
+`;
+
 const PayoffItem = styled.li`
   border-radius: 8px;
   border: 1px solid #ddd;
@@ -41,20 +46,6 @@ const PayoffItem = styled.li`
 
 const Button = styled(RButton)`
   margin-top: 18px;
-`;
-
-const Select = styled.select`
-  display: block;
-  margin-top: 12px;
-  width: 100%;
-  border: none;
-  outline: none;
-  background: #3b3b3b;
-  font-size: 18px;
-  color: #ddd;
-  padding: 12px;
-  border-radius: 4px;
-  cursor: pointer;
 `;
 
 const addMonth = (toAddDate: string) => {
@@ -146,7 +137,7 @@ const CalculatorEarlyPayoff = (props: Props) => {
                 onInput={onInput}
               />
 
-              <RDatePicker
+              <DatePicker
                 value={item.date}
                 name={`payoff-date-${i}`}
                 type="month"
@@ -154,19 +145,24 @@ const CalculatorEarlyPayoff = (props: Props) => {
                 onChange={onInput}
               />
 
-              <Select
+              <RSelect
+                options={[
+                  {
+                    label: 'Lower monthly payments',
+                    value: 'payment',
+                  },
+                  {
+                    label: 'Reduce loan term',
+                    value: 'term',
+                  },
+                ]}
+                label="Type early payoff"
+                name={`payoff-type-${i}`}
                 value={item.type}
-                onChange={(ev: ChangeEvent<HTMLSelectElement>) => onInput(ev.target.value, `payoff-type-${i}`)}
-              >
-                <option value="payment">
-                  Payment
-                </option>
-                <option value="term">
-                  Term
-                </option>
-              </Select>
+                onChange={onInput}
+              />
 
-              <Button onClick={(ev: MouseEvent<HTMLButtonElement>) => onClickRemove(i)}>
+              <Button onClick={() => onClickRemove(i)}>
                 Remove
               </Button>
             </PayoffItem>
