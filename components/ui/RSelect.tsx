@@ -25,9 +25,9 @@ const Select = styled.select`
   width: 100%;
   border: none;
   outline: none;
-  background: #3b3b3b;
+  background: ${({ theme }) => theme.colors.dark3};
   font-size: 18px;
-  color: #ddd;
+  color: ${({ theme }) => theme.colors.light1};;
   padding: 12px;
   border-radius: 4px;
   cursor: pointer;

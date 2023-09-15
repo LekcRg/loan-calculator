@@ -1,17 +1,17 @@
 import styled from 'styled-components';
 
-import type { LoanData } from '@/types/Calculator';
-import { roundAndSplitThousands } from '@/assets/ts/textUtils';
+import bgImage from '@/assets/images/calculator-image.png';
 
-import RInput from '@/components/ui/RInput';
-import RDatePicker from '@/components/ui/RDatePicker';
-import { RNumber } from '@/components/ui/RNumber';
+import type { LoanData } from '@/types/Calculator';
+
+import CalculatorAside from './Calculator/CalculatorAside';
+import CalculatorForm from './Calculator/CalculatorForm';
 
 type Props = {
-  onChange: Function,
-  state: LoanData,
-  monthly: number | undefined | null,
-  className?: string,
+  onChange: Function;
+  state: LoanData;
+  monthly: number | undefined | null;
+  className?: string;
 }
 
 const CalculatorBlock = styled.div`
@@ -24,26 +24,35 @@ const CalculatorBlock = styled.div`
 `;
 
 const Wrapper = styled.div`
+  position: relative;
   display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
-`;
+  padding: 32px;
+  background-color: ${({ theme }) => theme.colors.accent3};
+  background-image: radial-gradient(
+      48% 81% at 9% 77%,
+      rgba(255, 255, 255, .1) 0%,
+      rgba(255, 255, 255, 0) 100%);
+  border-radius: 8px;
+  box-shadow: 0 100px 150px -100px rgba(103, 173, 165, .66);
+  transition: box-shadow .3s ease;
 
-const Input = styled(RInput)`
-  width: 100%;
-
-  &:not(:last-child) {
-    margin-bottom: 12px;
+  &:before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(${bgImage.src});
+    background-repeat: no-repeat;
+    background-size: 430px auto;
+    background-position: bottom left;
+    mix-blend-mode: screen;
+    pointer-events: none;
   }
-`;
 
-const Result = styled.div`
-  margin-top: 12px;
-  font-size: 20px;
-  text-align: center;
-
-  span {
-    color: #0f0;
+  &:hover {
+    box-shadow: 0 110px 150px -100px rgba(103, 173, 165, .66);
   }
 `;
 
@@ -77,59 +86,14 @@ export default function Calculator(props: Props) {
   return (
     <CalculatorBlock className={`container ${className}`}>
       <Wrapper>
-        <Input
-          numbers
-          value={state.amount}
-          label="Loan amount"
-          placeholder="Loan amount"
-          name="amount"
-          autoComplete="off"
-          onInput={onInput}
-        />
+        <CalculatorAside/>
 
-        <Input
-          numbers
-          value={state.term}
-          label="Term (years)"
-          placeholder="Term"
-          name="term"
-          autoComplete="off"
+        <CalculatorForm
+          state={state}
+          monthly={monthly}
           onInput={onInput}
-        />
-
-        <Input
-          numbers
-          value={state.rate}
-          label="Rate"
-          placeholder="Rate"
-          name="rate"
-          autoComplete="off"
-          onInput={onInput}
-        />
-
-        <RDatePicker
-          value={state.date}
-          label="Date"
-          name="date"
-          onChange={onInput}
         />
       </Wrapper>
-
-      {
-        monthly ?
-          (
-            <Result>
-              Monthly payments:{' '}
-              {/* <span>{roundAndSplitThousands(Math.round(monthly * 100) / 100)}</span> */}
-              <RNumber num={monthly}/>
-            </Result>
-          )
-          : (
-            <Result>
-              <span>Fill in all the fields</span>
-            </Result>
-          )
-      }
     </CalculatorBlock>
   );
 }

@@ -5,6 +5,7 @@ type Props = {
   num: number,
   time?: number,
   className?: string,
+  lastSymbol?: string,
 }
 
 export const RNumber = (props: Props) => {
@@ -12,6 +13,7 @@ export const RNumber = (props: Props) => {
     num,
     time = 300,
     className,
+    lastSymbol,
   } = props;
   const [ lazyNum, setLazyNum ] = useState<number>(num);
   const [ animatedNum, setAnimatedNum ] = useState<number | null>(null);
@@ -45,7 +47,7 @@ export const RNumber = (props: Props) => {
 
   return (
     <span className={className}>
-      { roundAndSplitThousands( animatedNum || lazyNum) }
+      { roundAndSplitThousands( animatedNum || lazyNum) } {lastSymbol ? lastSymbol : ''}
     </span>
   );
 };

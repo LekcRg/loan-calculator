@@ -11,7 +11,7 @@ type Props = {
 const Label = styled.label`
   display: block;
   font-size: 16px;
-  color: #ddd;
+  color: ${({ theme }) => theme.colors.light1};
   margin-bottom: 5px;
 `;
 

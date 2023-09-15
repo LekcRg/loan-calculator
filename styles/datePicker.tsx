@@ -5,11 +5,10 @@ export const Calendar = styled.ul`
   flex-wrap: wrap;
 `;
 
-
 export const CalendarButton = styled.button`
   width: 100%;
   height: 30px;
-  border: 1px solid #ddd;
+  border: 1px solid ${({ theme }) => theme.colors.light1};
   cursor: pointer;
   background: #3b3b3b;
   transition: background .2s ease;
@@ -27,6 +26,6 @@ export const CalenadarElement = styled.li`
   }
 
   &._selected ${CalendarButton} {
-    background: #0f0;
+    background: ${({ theme }) => theme.colors.accent};
   }
 `;

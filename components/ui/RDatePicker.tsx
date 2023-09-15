@@ -18,6 +18,7 @@ type Props = {
   onChange?: Function,
   type?: ActiveCalendar,
   className?: string,
+  blue?: boolean,
 }
 
 const Wrapper = styled.div`
@@ -37,12 +38,14 @@ const Overlay = styled.div`
   }
 `;
 
-const Button = styled.button`
+const Button = styled.button<{ $blue?: boolean }>`
   text-align: left;
   width: 100%;
-  background: #3b3b3b;
+  background: ${(props) => props.$blue
+    ? props.theme.colors.accent4
+    : props.theme.colors.dark3};
   font-size: 18px;
-  color: #ddd;
+  color: ${({ theme }) => theme.colors.light1};
   padding: 12px;
   border-radius: 4px;
   outline: none;
@@ -74,6 +77,7 @@ const RDatePicker = (props: Props) => {
     onChange,
     className,
     type = 'date',
+    blue = false,
   } = props;
 
   let date = stringToDate(value || '') || dateNowUTC();
@@ -180,6 +184,7 @@ const RDatePicker = (props: Props) => {
 
       <Button
         onClick={() => changeIsShow(!isShow)}
+        $blue={blue}
       >
         { prettyDate }
       </Button>

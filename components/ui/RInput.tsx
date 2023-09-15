@@ -13,6 +13,7 @@ type Props = {
   value: string | number,
   autoComplete?: string,
   className?: string,
+  blue?: boolean,
   onChange?: Function,
   onInput?: Function,
   id?: string,
@@ -23,10 +24,12 @@ const Wrapper = styled.div`
   flex-direction: column;
 `;
 
-const Input = styled.input`
+const Input = styled.input<{ $blue?: boolean }>`
   font-size: 18px;
-  color: #ddd;
-  background: #3b3b3b;
+  color: ${({ theme }) => theme.colors.light1};
+  background: ${(props) => props.$blue
+    ? props.theme.colors.accent4
+    : props.theme.colors.dark3};
   outline: none;
   border: none;
   padding: 12px;
@@ -51,6 +54,7 @@ const RInput = (props: Props) => {
     onInput,
     id,
     disabled,
+    blue = false,
   } = props;
 
   const [
@@ -107,7 +111,8 @@ const RInput = (props: Props) => {
           </RLabel>
           : null
       }
-      <Input 
+      <Input
+        $blue={blue}
         type="text"
         id={id || `input-${name}`}
         placeholder={placeholder}
