@@ -66,4 +66,4 @@ jobs:
           script: |
             docker stop nextjs-app || true
             docker rm nextjs-app || true
-            docker run -d --name nextjs-app -p 3000:3000 nextjs-app
+            docker run --name nextjs-app -p 3000:3000 -d --restart unless-stopped nextjs-app
