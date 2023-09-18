@@ -6,13 +6,13 @@ import styled from 'styled-components';
 import { roundAndSplitThousands } from '@/assets/ts/textUtils';
 import { calculateTable } from '@/assets/ts/calculator';
 
-import type { LoanData, TableRow, EarlyPayoff } from '@/types/Calculator';
+import type { LoanData, TableRow, EarlyPayoff, CalculateTableData } from '@/types/Calculator';
 
 type Props = {
   className?: string,
   calculateData?: LoanData,
   monthly?: number,
-  initialState: TableRow[],
+  initialState: CalculateTableData,
   payoffs: EarlyPayoff[],
 }
 
@@ -53,14 +53,14 @@ const CalculatorTable = (props: Props) => {
     payoffs,
   } = props;
 
-  const [ tableState, setTableState ] = useState<TableRow[]>(initialState);
+  const [ tableState, setTableState ] = useState<CalculateTableData>(initialState);
 
   useEffect(() => {
     if (!calculateData || !monthly || !calculateData?.amount || !calculateData?.rate || !calculateData?.term) {
       return;
     }
 
-    const result:TableRow[] = calculateTable(calculateData, monthly, payoffs);
+    const result:CalculateTableData = calculateTable(calculateData, monthly, payoffs);
     setTableState(result);
   }, [ calculateData, setTableState, monthly, payoffs ]);
 
@@ -90,7 +90,7 @@ const CalculatorTable = (props: Props) => {
           </HeadCell>
         </tr>
         {
-          tableState.map((item, i) => (
+          tableState?.months?.map((item, i) => (
             <Row
               key={i}
               className={item.isPayoff ? '_payoff' : ''}

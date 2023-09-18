@@ -47,7 +47,7 @@ export const RNumber = (props: Props) => {
 
   return (
     <span className={className}>
-      { roundAndSplitThousands( animatedNum || lazyNum) } {lastSymbol ? lastSymbol : ''}
+      { roundAndSplitThousands( animatedNum || lazyNum) }{lastSymbol ? lastSymbol : ''}
     </span>
   );
 };

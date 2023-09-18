@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import bgImage from '@/assets/images/calculator-image.png';
 
-import type { LoanData } from '@/types/Calculator';
+import type { CalculateTableData, LoanData } from '@/types/Calculator';
 
 import CalculatorAside from './Calculator/CalculatorAside';
 import CalculatorForm from './Calculator/CalculatorForm';
@@ -10,6 +10,7 @@ import CalculatorForm from './Calculator/CalculatorForm';
 type Props = {
   onChange: Function;
   state: LoanData;
+  tableState: CalculateTableData,
   monthly: number | undefined | null;
   className?: string;
 }
@@ -61,6 +62,7 @@ export default function Calculator(props: Props) {
     onChange,
     state,
     monthly,
+    tableState,
     className,
   } = props;
 
@@ -80,7 +82,6 @@ export default function Calculator(props: Props) {
     if (JSON.stringify(state) !== JSON.stringify(newState)) {
       onChange({ ...newState });
     }
-
   };
 
   return (
@@ -91,6 +92,7 @@ export default function Calculator(props: Props) {
         <CalculatorForm
           state={state}
           monthly={monthly}
+          tableState={tableState}
           onInput={onInput}
         />
       </Wrapper>

@@ -1,4 +1,4 @@
-import type { LoanData, TableRow, EarlyPayoff } from '@/types/Calculator';
+import type { LoanData, TableRow, CalculateTableData, EarlyPayoff } from '@/types/Calculator';
 import { dateUTC, getPrettyDate, parseStringDate, stringToDate } from './dateUtils';
 
 export const calculateMonthly = (state: LoanData, isMonth = false): number => {
@@ -20,9 +20,13 @@ export const calculateMonthly = (state: LoanData, isMonth = false): number => {
   return 0;
 };
 
-export const calculateTable = (calculateData: LoanData, monthly: number, payoffs: EarlyPayoff[]): TableRow[] => {
+export const calculateTable = (
+  calculateData: LoanData,
+  monthly: number,
+  payoffs: EarlyPayoff[],
+): CalculateTableData => {
   if (!calculateData || !monthly || !calculateData?.amount || !calculateData?.rate || !calculateData?.term) {
-    return [];
+    return { months: [] };
   }
 
   let amount = calculateData.amount;
@@ -30,7 +34,7 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
   const calcuateDate = stringToDate(calculateData.date);
 
   if (!calcuateDate) {
-    return result;
+    return { months: result };
   }
 
   let currentDate = calcuateDate;
@@ -43,6 +47,7 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
 
   let newMonthly = monthly;
   let termMonth = calculateData.term * 12;
+  let totalPayments = 0;
 
   while (amount > 0) {
     const currentYear = dateUTC(year, 0, 1);
@@ -74,12 +79,15 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
     let ending = newMonthly < amount ? ((amount - principal) * 100) / 100 : 0;
 
     if (principal <= 0) {
-      return [];
+      return { months: [] };
     }
 
     const baseItem = {
       date: getPrettyDate(nextDate),
     };
+    const monthlyPayment = amount > newMonthly
+      ? newMonthly
+      : principal + interest;
 
     result.push({
       ...baseItem,
@@ -87,13 +95,13 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
       interest,
       principal,
       isPayoff: false,
-      amount: amount > newMonthly
-        ? newMonthly
-        : principal + interest,
+      amount: monthlyPayment,
       ending: ending > 0
         ? ending
         : 0,
     });
+
+    totalPayments += monthlyPayment;
 
     if (payoff) {
       ending = ending - payoffAmount;
@@ -106,6 +114,8 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
         amount: payoffAmount,
         ending: ending,
       });
+
+      totalPayments += payoffAmount;
 
       if (payoff.type === 'payment') {
         termMonth -= index;
@@ -122,5 +132,15 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
     currentDate = nextDate;
   }
 
-  return result;
+  const value: CalculateTableData = {
+    months: result,
+  };
+
+  if (totalPayments) {
+    value.totalPayments = totalPayments;
+    value.overPayment = totalPayments - calculateData.amount;
+    value.overPaymentPercent = Math.round((value.overPayment / calculateData.amount) * 1000) / 10;
+  }
+
+  return value;
 };

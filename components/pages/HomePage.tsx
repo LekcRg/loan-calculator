@@ -59,6 +59,7 @@ export default function Home(props: Props) {
       <Calculator
         state={calculatorState}
         monthly={monthly}
+        tableState={initialTableState}
         onChange={onChangeCalculator}
       />
       <CalculatorEarlyPayoff

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import type { LoanData } from '@/types/Calculator';
+import type { CalculateTableData, LoanData } from '@/types/Calculator';
 
 import CalculatorResult from './CalculatorResult';
 import RDatePicker from '@/components/ui/RDatePicker';
@@ -9,6 +9,7 @@ import RInput from '@/components/ui/RInput';
 type Props = {
   state: LoanData;
   monthly: number | undefined | null;
+  tableState: CalculateTableData;
   onInput: Function;
 }
 
@@ -30,6 +31,7 @@ const CalculatorForm = (props: Props) => {
   const {
     state,
     monthly,
+    tableState,
     onInput,
   } = props;
 
@@ -78,7 +80,10 @@ const CalculatorForm = (props: Props) => {
         onChange={onInput}
       />
 
-      <CalculatorResult monthly={monthly}/>
+      <CalculatorResult
+        monthly={monthly}
+        tableState={tableState}
+      />
     </Form>
   );
 };
