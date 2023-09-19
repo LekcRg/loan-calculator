@@ -12,9 +12,20 @@ const GlobalStyles = createGlobalStyle`
   body {
     padding-top: 20px;
     padding-bottom: 40px;
-    font-family: ${({ theme }) => theme.fontFamily};
+    /* font-family: ${({ theme }) => theme.fontFamily}; */
     color: ${({ theme }) => theme.colors.light1};
     background: ${({ theme }) => theme.colors.dark1};
+  }
+
+  button,
+  input,
+  optgroup,
+  select,
+  textarea {
+    font-family: inherit;
+    font-size: 100%;
+    line-height: 1.15;
+    margin: 0;
   }
 
   #__next {

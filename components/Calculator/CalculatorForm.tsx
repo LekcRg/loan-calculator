@@ -5,6 +5,8 @@ import type { CalculateTableData, LoanData } from '@/types/Calculator';
 import CalculatorResult from './CalculatorResult';
 import RDatePicker from '@/components/ui/RDatePicker';
 import RInput from '@/components/ui/RInput';
+import RSliderInput from '@/components/ui/RSliderInput';
+import RSlider from '@/components/ui/RSlider';
 
 type Props = {
   state: LoanData;
@@ -39,6 +41,9 @@ const CalculatorForm = (props: Props) => {
     <Form
       onSubmit={ev => ev.preventDefault()}
     >
+      <RSliderInput/>
+      {/* <RSlider/> */}
+
       <Input
         blue
         numbers

@@ -46,7 +46,7 @@ export default function Home() {
   const payoffs = cookiesValues.calcPayoffs;
 
   return (
-    <HomePage 
+    <HomePage
       initialState={state}
       initialPayoffs={payoffs}
     />
