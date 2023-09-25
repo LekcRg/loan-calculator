@@ -1,9 +1,6 @@
-name: Deploy production
+name: Deploy dev
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - master
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -14,12 +11,12 @@ jobs:
 
       # Собираем Docker-образ и сохраняем его в файл
       - name: Build Docker image
-        run: docker build -t nextjs-app .
+        run: docker build -t loan-dev . --build-arg port=3001
         shell: bash
 
       # Сохраняем Docker-образ в архив
       - name: Save Docker image to archive
-        run: docker save nextjs-app -o nextjs-app.tar
+        run: docker save loan-dev -o loan-dev.tar
         shell: bash
 
       # Копируем архив с Docker-образом на сервер
@@ -30,7 +27,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT }}
-          source: nextjs-app.tar
+          source: loan-dev.tar
           target: /tmp
 
       # Распаковываем архив с Docker-образом на сервере
@@ -42,7 +39,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
-            docker load --input /tmp/nextjs-app.tar
+            docker load --input /tmp/loan-dev.tar
 
       # Удаляем архив с Docker-образом на сервере
       - name: Remove Docker image archive on server
@@ -53,7 +50,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
-            rm /tmp/nextjs-app.tar
+            rm /tmp/loan-dev.tar
 
       # Запускаем Docker-контейнер на сервере
       - name: Run Docker container on server
@@ -64,6 +61,6 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
-            docker stop nextjs-app || true
-            docker rm nextjs-app || true
-            docker run --name nextjs-app -p 3000:3000 -d --restart unless-stopped nextjs-app
+            docker stop loan-dev || true
+            docker rm loan-dev || true
+            docker run --name loan-dev -p 3001:3001 -d --restart unless-stopped loan-dev
