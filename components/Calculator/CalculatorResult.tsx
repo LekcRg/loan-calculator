@@ -1,4 +1,6 @@
 import styled, { css } from 'styled-components';
+import type { MouseEventHandler } from 'react';
+
 import { RNumber } from '@/components/ui/RNumber';
 import { CalculateTableData } from '@/types/Calculator';
 
@@ -65,6 +67,46 @@ const CalculatorResult = (props: Props) => {
     tableState,
   } = props;
 
+  const onMouseDown: MouseEventHandler<HTMLLIElement> = (ev) => {
+    if (!ev) {
+      return;
+    }
+
+    if (ev.button === 2) {
+      const arrCSV = [
+        [ '#', 'Date', 'Full payment', 'Principal', 'Interest', 'Ending balance' ],
+        ...tableState.months.map(item => {
+          return [
+            (item?.index !== undefined && !isNaN(item?.index)) ? item.index + 1 : '',
+            `${item.date}`,
+            Math.round(item.amount * 100) / 100,
+            Math.round(item.principal * 100) / 100,
+            item.isPayoff ? 'Reduce loan term' : Math.round(item.interest * 100) / 100,
+            Math.round(item.ending * 100) / 100,
+          ].join(',');
+        }),
+      ];
+
+      const blob = new Blob([ arrCSV.join('\n') ], { type: 'text/csv' });
+
+      const url = window.URL.createObjectURL(blob);
+  
+      // Creating an anchor(a) tag of HTML
+      const a = document.createElement('a');
+  
+      // Passing the blob downloading url 
+      a.setAttribute('href', url);
+  
+      // Setting the anchor tag attribute for downloading
+      // and passing the download file name
+      a.setAttribute('download', 'minimite.csv');
+  
+      // Performing a download with click
+      a.click();
+    }
+
+  };
+
   return (
     <Result>
       {
@@ -85,7 +127,9 @@ const CalculatorResult = (props: Props) => {
               {
                 tableState?.totalPayments ? 
                   (
-                    <ResultItem>
+                    <ResultItem
+                      onMouseDown={onMouseDown}
+                    >
                       <ResultLabel>
                         Total payments:
                       </ResultLabel>
@@ -106,7 +150,7 @@ const CalculatorResult = (props: Props) => {
                   )
               }
 
-              {/* {
+              {
                 tableState?.overPayment && tableState.overPaymentPercent ? 
                   (
                     <ResultItem>
@@ -126,7 +170,7 @@ const CalculatorResult = (props: Props) => {
                       </div>
                     </ResultItem>
                   ) : ''
-              } */}
+              }
             </>
           ) : (
             <Result>
