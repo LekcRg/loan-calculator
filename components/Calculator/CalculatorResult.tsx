@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { RNumber } from '@/components/ui/RNumber';
 import { CalculateTableData } from '@/types/Calculator';
 
@@ -20,11 +20,32 @@ const Result = styled.ul`
   background: ${({ theme }) => theme.colors.accent4};
 `;
 
-const ResultItem = styled.li<{ $big?: boolean }>`
+interface ResultValueProps {
+  $big?: boolean;
+  $percent?: boolean;
+};
+
+const ResultValue = css<ResultValueProps>`
+  line-height: 1;
+  font-size: ${props => props.$big ? '32px' : '24px'};
+  font-weight: 700;
+  height: 24px;
+
+  ${props => props.$percent ? `
+    margin-left: 10px;
+    opacity: .3;
+  ` : ''}
+`;
+
+const ResultItem = styled.li<{ $big?: boolean, $error?: boolean }>`
   font-size: 20px;
 
   ${props => props.$big ? `
     width: 100%;
+  ` : ''}
+
+  ${props => props.$error ? `
+    opacity: .5;
   ` : ''}
 `;
 
@@ -34,18 +55,9 @@ const ResultLabel = styled.div`
   margin-bottom: 8px;
 `;
 
-const ResultNum = styled(RNumber)<{ $big?: boolean, $percent?: boolean }>`
-  line-height: 1;
-  font-size: ${props => props.$big ? '32px' : '24px'};
-  font-weight: 700;
-  line-height: 100%;
+const ResultNum = styled(RNumber)<ResultValueProps>`${ResultValue}`;
 
-  ${props => props.$percent ? `
-    margin-left: 10px;
-    opacity: .3;
-  ` : ''
-}
-`;
+const ResultStr = styled.span<ResultValueProps>`${ResultValue}`;
 
 const CalculatorResult = (props: Props) => {
   const {
@@ -82,10 +94,19 @@ const CalculatorResult = (props: Props) => {
                         lastSymbol=' €'
                       />
                     </ResultItem>
-                  ) : ''
+                  ) : (
+                    <ResultItem $error>
+                      <ResultLabel>
+                        Total payments, overpayment:
+                      </ResultLabel>
+                      <ResultStr>
+                        Calculation is not possible
+                      </ResultStr>
+                    </ResultItem>
+                  )
               }
 
-              {
+              {/* {
                 tableState?.overPayment && tableState.overPaymentPercent ? 
                   (
                     <ResultItem>
@@ -105,7 +126,7 @@ const CalculatorResult = (props: Props) => {
                       </div>
                     </ResultItem>
                   ) : ''
-              }
+              } */}
             </>
           ) : (
             <Result>

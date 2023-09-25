@@ -5,15 +5,31 @@ import type { ReactSliderProps } from 'react-slider';
 
 import { splitThousands } from '@/assets/ts/textUtils';
 
+import RInputDashed from './RInputDashed';
+
 type Props = {
+  value: number,
+  name: string,
+  label?: string,
   min?: ReactSliderProps['min'],
   max?: ReactSliderProps['max'],
+  step?: ReactSliderProps['step'],
   marks?: number[],
-  onChange?: ReactSliderProps['onChange'],
   className?: string,
+  withInput?: Boolean,
+  onChange?: ((value: string | number, name: string) => void),
 }
 
+const Wrapper = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+`;
+
 const Slider = styled(ReactSlider)`
+  width: 100%;
   height: 8px;
   margin-top: 10px;
   cursor: pointer;
@@ -69,11 +85,16 @@ const StyledMark = styled.div<{ $first?: boolean, $last?: boolean }>`
 
 const RSlider = (props: Props) => {
   const {
+    value,
+    name,
     min = 0,
-    max = 900000,
-    marks = [ 0, 300000, 600000, 900000 ],
-    onChange,
+    max,
+    marks,
+    step,
+    label,
     className,
+    withInput,
+    onChange,
   } = props;
 
   const Mark: ReactSliderProps['renderMark'] = (props) => marks?.length ? (
@@ -87,18 +108,38 @@ const RSlider = (props: Props) => {
     </StyledMark>
   ) : null;
 
+  const onChangeSlider: ReactSliderProps['onChange'] = (value, index) => {
+    if (onChange) {
+      onChange(value, name);
+    }
+  };
+
   return (
-    <Slider
-      className={className}
-      min={min}
-      max={max}
-      marks={marks}
-      renderTrack={Track}
-      renderThumb={Thumb}
-      renderMark={Mark}
-      onChange={onChange}
-      step={1000}
-    />
+    <Wrapper>
+      { withInput && (
+        <RInputDashed
+          numbers
+          max={max}
+          label={label}
+          name={name}
+          value={value}
+          onInput={onChange}
+        />
+      )}
+
+      <Slider
+        value={value}
+        className={className}
+        min={min}
+        max={max}
+        marks={marks}
+        renderTrack={Track}
+        renderThumb={Thumb}
+        renderMark={Mark}
+        onChange={onChangeSlider}
+        step={step}
+      />
+    </Wrapper>
   );
 };
 

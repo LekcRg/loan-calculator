@@ -5,14 +5,13 @@ import type { CalculateTableData, LoanData } from '@/types/Calculator';
 import CalculatorResult from './CalculatorResult';
 import RDatePicker from '@/components/ui/RDatePicker';
 import RInput from '@/components/ui/RInput';
-import RSliderInput from '@/components/ui/RSliderInput';
 import RSlider from '@/components/ui/RSlider';
 
 type Props = {
   state: LoanData;
   monthly: number | undefined | null;
   tableState: CalculateTableData;
-  onInput: Function;
+  onInput: ((value: string | number, name: string) => void);
 }
 
 const Form = styled.form`
@@ -41,40 +40,35 @@ const CalculatorForm = (props: Props) => {
     <Form
       onSubmit={ev => ev.preventDefault()}
     >
-      <RSliderInput/>
-      {/* <RSlider/> */}
-
-      <Input
-        blue
-        numbers
-        value={state.amount}
+      <RSlider
         label="Loan amount"
-        placeholder="Loan amount"
         name="amount"
-        autoComplete="off"
-        onInput={onInput}
+        withInput
+        max={900000}
+        marks={[ 0, 300000, 600000, 900000 ]}
+        step={10}
+        value={state.amount}
+        onChange={onInput}
       />
 
-      <Input
-        blue
-        numbers
-        value={state.term}
+      <RSlider
         label="Term (years)"
-        placeholder="Term"
         name="term"
-        autoComplete="off"
-        onInput={onInput}
+        withInput
+        max={35}
+        marks={[ 0, 12, 24, 35 ]}
+        value={state.term}
+        onChange={onInput}
       />
 
-      <Input
-        blue
-        numbers
-        value={state.rate}
+      <RSlider
         label="Rate"
-        placeholder="Rate"
         name="rate"
-        autoComplete="off"
-        onInput={onInput}
+        withInput
+        marks={[ 0, 25, 50, 75 ]}
+        max={75}
+        value={state.rate}
+        onChange={onInput}
       />
 
       <RDatePicker

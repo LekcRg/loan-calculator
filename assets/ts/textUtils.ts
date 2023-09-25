@@ -33,14 +33,14 @@ export const roundAndSplitThousands = (num: number | string) => {
 
 export const inputFloat = (
   value: string | number,
-  max?: number,
+  max: number,
   decimal: number = 2): string => {
   let result = numbersOnly(value);
-  const maxIntLength = String(Number.MAX_SAFE_INTEGER).length;
 
-  if (result.length >= maxIntLength) {
-    result = result.slice(0, maxIntLength - 1);
+  if (Number(result) >= max) {
+    result = String(max);
   }
+
   const resultLen = result.length;
   const dotIndex = result.indexOf('.');
 

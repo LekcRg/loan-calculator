@@ -3,14 +3,15 @@ import type { ReactNode, MouseEvent } from 'react';
 import styled from 'styled-components';
 
 type Props = {
-    children: ReactNode,
-    htmlFor?: string,
-    onClick?: Function,
+  children: ReactNode;
+  small?: boolean;
+  htmlFor?: string;
+  onClick?: Function;
 }
 
-const Label = styled.label`
+const Label = styled.label<{ $small?: boolean }>`
   display: block;
-  font-size: 16px;
+  font-size: ${props => props.$small ? '10px' : '16px'};
   color: ${({ theme }) => theme.colors.light1};
   margin-bottom: 5px;
 `;
@@ -18,6 +19,7 @@ const Label = styled.label`
 const RLabel = (props: Props) => {
   const {
     children,
+    small = false,
     htmlFor,
     onClick,
   } = props;
@@ -29,7 +31,8 @@ const RLabel = (props: Props) => {
   };
 
   return (
-    <Label 
+    <Label
+      $small={small}
       htmlFor={htmlFor}
       onClick={onClickLabel}
     >
