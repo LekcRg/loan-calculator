@@ -128,7 +128,10 @@ export default function Calculator(props: Props) {
       let x = Math.round((xOffset / wrapperSizes.width - .5) * 10000) / 100;
       x = x > 50 ? 50 : x;
       x = x < -50 ? -50 : x;
-      setShadowPos({ x, y });
+      setShadowPos({ 
+        x: x,
+        y: y,
+      });
     };
 
     console.log('123');
