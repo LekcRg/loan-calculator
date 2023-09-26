@@ -73,7 +73,7 @@ const CalculatorResult = (props: Props) => {
             <>
               <ResultItem $big>
                 <ResultLabel>
-                Monthly payments:
+                Monthly payment:
                 </ResultLabel>
                 <ResultNum
                   $big
@@ -106,7 +106,7 @@ const CalculatorResult = (props: Props) => {
                   )
               }
 
-              {/* {
+              {
                 tableState?.overPayment && tableState.overPaymentPercent ? 
                   (
                     <ResultItem>
@@ -126,7 +126,7 @@ const CalculatorResult = (props: Props) => {
                       </div>
                     </ResultItem>
                   ) : ''
-              } */}
+              }
             </>
           ) : (
             <Result>

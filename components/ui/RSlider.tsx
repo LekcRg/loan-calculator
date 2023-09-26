@@ -17,6 +17,7 @@ type Props = {
   marks?: number[],
   className?: string,
   withInput?: Boolean,
+  inputIgnoreMax?: Boolean,
   onChange?: ((value: string | number, name: string) => void),
 }
 
@@ -95,6 +96,7 @@ const RSlider = (props: Props) => {
     className,
     withInput,
     onChange,
+    inputIgnoreMax,
   } = props;
 
   const Mark: ReactSliderProps['renderMark'] = (props) => marks?.length ? (
@@ -119,7 +121,7 @@ const RSlider = (props: Props) => {
       { withInput && (
         <RInputDashed
           numbers
-          max={max}
+          max={inputIgnoreMax ? undefined : max}
           label={label}
           name={name}
           value={value}

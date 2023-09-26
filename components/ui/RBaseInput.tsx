@@ -111,12 +111,10 @@ const RBaseInput = (props: Props) => {
   };
 
   useEffect(() => {
-    console.log('123');
     if (value !== undefined) {
       let newValue = inputFloat(value, max);
       // newValue = isFocus || !lastSymbol ? newValue : `${newValue}${lastSymbol}`;
       if (newValue !== lazyValue) {
-        console.log('change');
         setLazyValue(numbers ? newValue : value);
       }
     }

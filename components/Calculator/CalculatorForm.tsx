@@ -43,10 +43,11 @@ const CalculatorForm = (props: Props) => {
       <RSlider
         label="Loan amount"
         name="amount"
-        withInput
         max={900000}
         marks={[ 0, 300000, 600000, 900000 ]}
         step={10}
+        withInput
+        inputIgnoreMax
         value={state.amount}
         onChange={onInput}
       />
