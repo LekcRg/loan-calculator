@@ -69,9 +69,8 @@ export const calculateTable = (
     const payoffAmount = payoff ? payoff.amount : 0;
 
     const nextDate = dateUTC(year, month, day);
-    const monthDays = (nextDate.getTime() - currentDate.getTime()) / msToDay;
 
-    const interest = amount * calculateData.rate * monthDays / yearDays / 100;
+    const interest = amount * calculateData.rate / 12 / 100;
 
     const principal = newMonthly < amount
       ? newMonthly - interest
