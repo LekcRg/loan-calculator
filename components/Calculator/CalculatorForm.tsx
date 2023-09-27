@@ -4,8 +4,9 @@ import type { CalculateTableData, LoanData } from '@/types/Calculator';
 
 import CalculatorResult from './CalculatorResult';
 import RDatePicker from '@/components/ui/RDatePicker';
-import RInput from '@/components/ui/RInput';
+// import RInput from '@/components/ui/RInput';
 import RSlider from '@/components/ui/RSlider';
+import { media } from '@/styles/mixnis';
 
 type Props = {
   state: LoanData;
@@ -16,14 +17,22 @@ type Props = {
 
 const Form = styled.form`
   flex-direction: column;
-  margin-bottom: 20px;
   flex: 1;
 `;
 
-const Input = styled(RInput)`
-  width: 100%;
+// const Input = styled(RInput)`
+//   width: 100%;
 
-  &:not(:last-child) {
+//   &:not(:last-child) {
+//     margin-bottom: 12px;
+//   }
+// `;
+
+const Slider = styled(RSlider)`
+  margin-bottom: 20px;
+
+
+  ${media.mobile} {
     margin-bottom: 12px;
   }
 `;
@@ -40,7 +49,7 @@ const CalculatorForm = (props: Props) => {
     <Form
       onSubmit={ev => ev.preventDefault()}
     >
-      <RSlider
+      <Slider
         label="Loan amount"
         name="amount"
         max={900000}
@@ -52,7 +61,7 @@ const CalculatorForm = (props: Props) => {
         onChange={onInput}
       />
 
-      <RSlider
+      <Slider
         label="Term (years)"
         name="term"
         withInput
@@ -62,7 +71,7 @@ const CalculatorForm = (props: Props) => {
         onChange={onInput}
       />
 
-      <RSlider
+      <Slider
         label="Rate"
         name="rate"
         withInput

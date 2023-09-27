@@ -1,12 +1,14 @@
 import styled from 'styled-components';
+import { media } from '@/styles/mixnis';
 
 import bgImage from '@/assets/images/calculator-image.png';
 
 import type { CalculateTableData, LoanData } from '@/types/Calculator';
 
-import CalculatorAside from './Calculator/CalculatorAside';
+import CalculatorAsideComponent from './Calculator/CalculatorAside';
 import CalculatorForm from './Calculator/CalculatorForm';
 import { useEffect, useRef, useState } from 'react';
+
 
 type Props = {
   onChange: Function;
@@ -20,8 +22,14 @@ const CalculatorBlock = styled.div`
   display: flex;
   flex-direction: column;
 
-  @media screen and (max-width: 800px) {
+  ${media.tablet} {
     width: 100%;
+  }
+`;
+
+const CalculatorAside = styled(CalculatorAsideComponent)`
+  ${media.pc} {
+    margin-bottom: 20px;
   }
 `;
 
@@ -36,6 +44,14 @@ const Wrapper = styled.div`
       rgba(255, 255, 255, 0) 100%);
   border-radius: 8px;
 
+  ${media.pc} {
+    flex-direction: column;
+  }
+
+  ${media.mobile} {
+    padding: 16px;
+  }
+
   &:before {
     content: '';
     position: absolute;
@@ -49,6 +65,15 @@ const Wrapper = styled.div`
     background-position: bottom left;
     mix-blend-mode: screen;
     pointer-events: none;
+
+    ${media.pc} {
+      transform: scale(-1);
+      background-size: 200px auto;
+    }
+
+    ${media.mobile} {
+      content: none;
+    }
   }
 `;
 
@@ -144,6 +169,7 @@ export default function Calculator(props: Props) {
           style={shadowStyles}
           $transormTransition={shadowPos === null}
         />
+
         <CalculatorAside/>
 
         <CalculatorForm

@@ -27,6 +27,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
+  padding-bottom: 18px;
 `;
 
 const Slider = styled(ReactSlider)`
@@ -34,7 +35,6 @@ const Slider = styled(ReactSlider)`
   height: 8px;
   margin-top: 10px;
   cursor: pointer;
-  margin-bottom: 50px;
 `;
 
 const StyledTrack = styled.div`

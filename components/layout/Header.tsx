@@ -20,6 +20,7 @@ const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   height: 60px;
+  width: 100%;
   padding: 0px 16px;
   background: ${({ theme }) => theme.colors.dark2};
   border-radius: 4px;
@@ -76,8 +77,8 @@ const LinkImage = styled(Image)`
 
 const Header = () => {
   return (
-    <HeaderBlock>
-      <Container className="container">
+    <HeaderBlock className="container">
+      <Container>
         <LogoWrapper>
           <Logo
             src={logoImg}

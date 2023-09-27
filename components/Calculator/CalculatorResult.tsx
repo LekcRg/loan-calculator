@@ -1,4 +1,6 @@
 import styled, { css } from 'styled-components';
+import { media } from '@/styles/mixnis';
+
 import { RNumber } from '@/components/ui/RNumber';
 import { CalculateTableData } from '@/types/Calculator';
 
@@ -18,6 +20,11 @@ const Result = styled.ul`
   border-radius: 6px;
   list-style-type: none;
   background: ${({ theme }) => theme.colors.accent4};
+
+  ${media.mobile} {
+    padding: 16px;
+    gap: 16px 0;
+  }
 `;
 
 interface ResultValueProps {
