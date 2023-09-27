@@ -6,7 +6,7 @@ import type { CalculateTableData, LoanData } from '@/types/Calculator';
 
 import CalculatorAside from './Calculator/CalculatorAside';
 import CalculatorForm from './Calculator/CalculatorForm';
-import { MouseEventHandler, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type Props = {
   onChange: Function;
@@ -50,14 +50,6 @@ const Wrapper = styled.div`
     mix-blend-mode: screen;
     pointer-events: none;
   }
-
-  /* &:after {
-    
-  }
-
-  &:hover:after {
-    box-shadow: 0 110px 150px -100px rgba(103, 173, 165, .66);
-  } */
 `;
 
 const Shadow = styled.div<{$transormTransition: boolean}>`
@@ -113,6 +105,7 @@ export default function Calculator(props: Props) {
     if (typeof window === 'undefined') {
       return;
     }
+
     const mouseMove = (ev: MouseEvent) => {
       if (!wrapperEl?.current) {
         return;
@@ -128,19 +121,18 @@ export default function Calculator(props: Props) {
       let x = Math.round((xOffset / wrapperSizes.width - .5) * 10000) / 100;
       x = x > 50 ? 50 : x;
       x = x < -50 ? -50 : x;
-      setShadowPos({ 
+      setShadowPos({
         x: x,
         y: y,
       });
     };
 
-    console.log('123');
     document.addEventListener('mousemove', mouseMove);
 
     return () => {
       document.removeEventListener('mousemove', mouseMove);
     };
-  }, [ ]);
+  }, []);
 
   return (
     <CalculatorBlock
