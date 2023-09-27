@@ -6,6 +6,7 @@ import type { CalculateTableData, LoanData } from '@/types/Calculator';
 
 import CalculatorAside from './Calculator/CalculatorAside';
 import CalculatorForm from './Calculator/CalculatorForm';
+import { useEffect, useRef, useState } from 'react';
 
 type Props = {
   onChange: Function;
@@ -34,8 +35,6 @@ const Wrapper = styled.div`
       rgba(255, 255, 255, .1) 0%,
       rgba(255, 255, 255, 0) 100%);
   border-radius: 8px;
-  box-shadow: 0 100px 150px -100px rgba(103, 173, 165, .66);
-  transition: box-shadow .3s ease;
 
   &:before {
     content: '';
@@ -51,10 +50,21 @@ const Wrapper = styled.div`
     mix-blend-mode: screen;
     pointer-events: none;
   }
+`;
 
-  &:hover {
-    box-shadow: 0 110px 150px -100px rgba(103, 173, 165, .66);
-  }
+const Shadow = styled.div<{$transormTransition: boolean}>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin: auto;
+  width: calc(100% - 110px);
+  height: calc(100% - 110px);
+  box-shadow: 0 0 150px 5px rgba(103, 173, 165, .66);
+  z-index: -1;
+  will-change: transform;
+  transition: box-shadow .3s ease${({ $transormTransition }) => $transormTransition ? ', transform .2s ease' : ''};
 `;
 
 export default function Calculator(props: Props) {
@@ -84,9 +94,56 @@ export default function Calculator(props: Props) {
     }
   };
 
+  const [ shadowPos, setShadowPos ] = useState<{x: number, y: number} | null>(null);
+  const wrapperEl = useRef<HTMLDivElement | null>(null);
+
+  const shadowStyles = {
+    transform: shadowPos ? `translate(${shadowPos?.x || 0}px, ${shadowPos?.y || 0}px)` : '',
+  };
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const mouseMove = (ev: MouseEvent) => {
+      if (!wrapperEl?.current) {
+        return;
+      }
+      const wrapperSizes = wrapperEl.current.getBoundingClientRect();
+  
+      const yOffset = ev.clientY - wrapperSizes.y;
+      const xOffset = ev.clientX - wrapperSizes.x;
+  
+      let y = Math.round((yOffset / wrapperSizes.height - .5) * 10000) / 100;
+      y = y > 50 ? 50 : y;
+      y = y < -50 ? -50 : y;
+      let x = Math.round((xOffset / wrapperSizes.width - .5) * 10000) / 100;
+      x = x > 50 ? 50 : x;
+      x = x < -50 ? -50 : x;
+      setShadowPos({
+        x: x,
+        y: y,
+      });
+    };
+
+    document.addEventListener('mousemove', mouseMove);
+
+    return () => {
+      document.removeEventListener('mousemove', mouseMove);
+    };
+  }, []);
+
   return (
-    <CalculatorBlock className={`container ${className}`}>
+    <CalculatorBlock
+      ref={wrapperEl}
+      className={`container ${className}`}
+    >
       <Wrapper>
+        <Shadow
+          style={shadowStyles}
+          $transormTransition={shadowPos === null}
+        />
         <CalculatorAside/>
 
         <CalculatorForm
