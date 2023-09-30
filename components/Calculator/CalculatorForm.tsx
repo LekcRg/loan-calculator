@@ -12,7 +12,7 @@ type Props = {
   state: LoanData;
   monthly: number | undefined | null;
   tableState: CalculateTableData;
-  onInput: ((value: string | number, name: string) => void);
+  onChange: (value: string | number, name: string) => void;
 }
 
 const Form = styled.form`
@@ -42,7 +42,7 @@ const CalculatorForm = (props: Props) => {
     state,
     monthly,
     tableState,
-    onInput,
+    onChange,
   } = props;
 
   return (
@@ -55,30 +55,33 @@ const CalculatorForm = (props: Props) => {
         max={900000}
         marks={[ 0, 300000, 600000, 900000 ]}
         step={10}
+        suffix=" €"
         withInput
         inputIgnoreMax
         value={state.amount}
-        onChange={onInput}
+        onChange={onChange}
       />
 
       <Slider
         label="Term (years)"
         name="term"
         withInput
+        suffix=" years"
         max={35}
         marks={[ 0, 12, 24, 35 ]}
         value={state.term}
-        onChange={onInput}
+        onChange={onChange}
       />
 
       <Slider
         label="Rate"
         name="rate"
         withInput
+        suffix="%"
         marks={[ 0, 25, 50, 75 ]}
         max={75}
         value={state.rate}
-        onChange={onInput}
+        onChange={onChange}
       />
 
       <RDatePicker
@@ -86,7 +89,7 @@ const CalculatorForm = (props: Props) => {
         value={state.date}
         label="Date"
         name="date"
-        onChange={onInput}
+        onChange={onChange}
       />
 
       <CalculatorResult

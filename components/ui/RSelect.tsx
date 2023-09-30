@@ -27,7 +27,7 @@ const Select = styled.select`
   outline: none;
   background: ${({ theme }) => theme.colors.dark3};
   font-size: 18px;
-  color: ${({ theme }) => theme.colors.light1};;
+  color: ${({ theme }) => theme.colors.light1};
   padding: 12px;
   border-radius: 4px;
   cursor: pointer;

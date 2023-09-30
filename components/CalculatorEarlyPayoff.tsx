@@ -77,10 +77,10 @@ const CalculatorEarlyPayoff = (props: Props) => {
     setPayoffs([
       ...payoffs,
       {
-        amount: 0,
+        amount: 1000,
         date: nextPayoffDate,
         id,
-        type: 'payment',
+        type: 'term',
       },
     ]);
 
@@ -94,7 +94,7 @@ const CalculatorEarlyPayoff = (props: Props) => {
     ]);
   };
 
-  const onInput = (value: Number | string, name: String) => {
+  const onChangeValues = (value: Number | string, name: String) => {
     const nameArr = name.split('-');
     const nameObj = {
       key: nameArr[1],
@@ -134,7 +134,7 @@ const CalculatorEarlyPayoff = (props: Props) => {
                 placeholder="Amount"
                 name={`payoff-amount-${i}`}
                 autoComplete="off"
-                onInput={onInput}
+                onChange={onChangeValues}
               />
 
               <DatePicker
@@ -142,24 +142,24 @@ const CalculatorEarlyPayoff = (props: Props) => {
                 name={`payoff-date-${i}`}
                 type="month"
                 label="Date"
-                onChange={onInput}
+                onChange={onChangeValues}
               />
 
               <RSelect
                 options={[
                   {
-                    label: 'Lower monthly payments',
-                    value: 'payment',
-                  },
-                  {
                     label: 'Reduce loan term',
                     value: 'term',
+                  },
+                  {
+                    label: 'Lower monthly payments',
+                    value: 'payment',
                   },
                 ]}
                 label="Type early payoff"
                 name={`payoff-type-${i}`}
                 value={item.type}
-                onChange={onInput}
+                onChange={onChangeValues}
               />
 
               <Button onClick={() => onClickRemove(i)}>

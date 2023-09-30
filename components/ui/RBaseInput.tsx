@@ -1,12 +1,12 @@
-import { useEffect, useState, useRef } from "react";
-import type { FocusEvent } from "react";
+import { useNumericFormat, NumberFormatBase } from "react-number-format";
 
-import { inputFloat } from "@/assets/ts/textUtils";
+import type { OnValueChange, NumberFormatValues } from 'react-number-format';
 
 type Props = {
   name?: string;
   placeholder?: string,
   numbers?: boolean;
+  suffix?: string,
   max?: number,
   disabled?: boolean;
   value: string | number;
@@ -14,7 +14,8 @@ type Props = {
   className?: string;
   id?: string;
   lastSymbol?: string;
-  onChange?: Function;
+  onChange?: (value: string | number, name: string) => void,
+  onError?: (error: string | null) => void,
   onChangeLazyValue?: Function;
   onInput?: Function;
 };
@@ -22,125 +23,81 @@ type Props = {
 const RBaseInput = (props: Props) => {
   const {
     value,
-    name,
+    name = 'input',
     placeholder,
-    numbers,
-    max = 999999999999,
+    max = 999999999,
     autoComplete,
-    onChange,
-    onChangeLazyValue,
-    onInput,
     id,
     disabled,
-    lastSymbol,
+    suffix,
     className,
+    onChangeLazyValue,
+    onError,
+    onChange,
   } = props;
 
-  const [
-    isFocus,
-    setIsFocus,
-  ] = useState<boolean>(false);
+  const onValueChange: OnValueChange = (values) => {
+    let { floatValue, formattedValue } = values;
 
-  const [
-    lazyValue,
-    setLazyValue,
-  ] = useState<string | number>('');
-
-  const getReturnValue = (value: string | number) => {
-    if (numbers && lazyValue !== undefined) {
-      return !value ? 1 : Number(String(value).replace(/[^0-9.,]/g, ''));
-    }
-
-    return value;
-  };
-
-  const inputEl = useRef<HTMLInputElement | null>(null);
-
-  const onFocusInput = (ev: FocusEvent<HTMLInputElement>) => {
-    // if (!inputEl?.current) {
-    //   return;
-    // }
-    // setIsFocus(true);
-    // console.log(inputEl);
-    // const currentPos = inputEl.current.selectionStart;
-    // // const currentPos = inputEl.current.selectionEnd;
-
-    // console.log(`${currentPos} === ${inputEl.current.value.length - 1}`);
-
-    // if (currentPos === inputEl.current.value.length - 1) {
-    //   return;
-    // }
-
-    // // setTimeout(() => {
-    // ev.target.setSelectionRange(2, 2);
-    // //   ev.target.focus();
-    // // }, 1);
-  };
-
-  const onBlurInput = (ev:  FocusEvent<HTMLInputElement>) => {
-    // setIsFocus(false);
-    // console.log(ev);
-    // ev.target.selectionStart = 2;
-    // ev.target.selectionEnd = 2;
-    // ev.target.setSelectionRange(2, 2);
-    // ev.target.focus();
-  };
-
-  const onInputInput = (ev: React.ChangeEvent<HTMLInputElement>) => {
-    let value = ev.target.value;
-
-    const newValue = numbers ? inputFloat(value, max) : value;
-
-    if (lazyValue === newValue) {
+    if (!floatValue) {
       return;
     }
 
-    setLazyValue(newValue);
-
-    const returnValue = getReturnValue(newValue);
-    if (onInput) {
-      onInput(returnValue, name, ev);
-    }
-  };
-
-  const onChangeInput = (ev: React.ChangeEvent<HTMLInputElement>) => {
-    const returnValue = getReturnValue(lazyValue);
     if (onChange) {
-      onChange(returnValue, name, ev);
+      onChange(floatValue, name);
+    }
+
+    if (onChangeLazyValue) {
+      onChangeLazyValue(formattedValue, name);
     }
   };
 
-  useEffect(() => {
-    if (value !== undefined) {
-      let newValue = inputFloat(value, max);
-      // newValue = isFocus || !lastSymbol ? newValue : `${newValue}${lastSymbol}`;
-      if (newValue !== lazyValue) {
-        setLazyValue(numbers ? newValue : value);
-      }
-    }
-  }, [ value, setLazyValue, numbers, max, isFocus, lastSymbol, lazyValue ]);
+  const isAllowed = (values: NumberFormatValues) => {
+    const { floatValue } = values;
+    const isAllow = Boolean(max !== undefined && Number(floatValue) <= max && Number(floatValue) >= 1);
+    console.log(`${Number(floatValue)} <= ${max} && ${Number(floatValue)} >= 1`);
 
-  useEffect(() => {
-    if (onChangeLazyValue) {
-      onChangeLazyValue(lazyValue, name);
+    if (!isAllow && onError) {
+      onError(`The max value is ${max}`);
+    } else if (onError) {
+      onError(null);
     }
-  }, [ lazyValue, name, onChangeLazyValue ]);
+    return isAllow;
+  };
+
+  const { format, ...numberFormatBaseProps } = useNumericFormat({
+    isAllowed,
+    suffix: suffix,
+    thousandSeparator: ' ',
+    allowLeadingZeros: true,
+    allowNegative: false,
+    decimalScale: 2,
+    onValueChange: onValueChange,
+  });
+
+  const _format = (numStr: string) => {
+    if (!format) {
+      return numStr;
+    }
+
+    // TODO: check how to move corret
+    // let newValue = Number(numStr) >= max ? String(max) : numStr;
+    // newValue = Number(numStr) < 1 ? String(1) : numStr;
+    const formattedValue = format(numStr);
+    return formattedValue;
+  };
 
   return (
-    <input
-      ref={inputEl}
-      type="text"
+    <NumberFormatBase
+      {...numberFormatBaseProps}
+      name={name}
+      value={value}
       className={className}
       id={id || `input-${name}`}
       placeholder={placeholder}
-      name={name}
-      value={lazyValue || (numbers ? inputFloat(value, max) : value)}
       autoComplete={autoComplete}
       disabled={disabled}
-      onFocus={onFocusInput}
-      onBlur={onBlurInput}
-      onInput={onInputInput}
-      onChange={onChangeInput}
+      format={_format}
     />
   );
 };

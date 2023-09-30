@@ -8,9 +8,11 @@ import RBaseInput from '@/components/ui/RBaseInput';
 type Props = {
   value: number;
   name: string;
+  suffix?: string,
   label?: string;
   numbers?: boolean;
   max?: number;
+  onError?: (error: string | null) => void,
   onInput?: ((value: string | number, name: string) => void);
   onChange?: ((value: string | number, name: string) => void);
 }
@@ -46,7 +48,7 @@ const Dashed = styled.div`
   height: 100%;
   pointer-events: none;
   line-height: 1;
-  border-bottom: 1px dashed #fff;
+  border-bottom: 1px dashed rgba(249, 249, 249, 0.20);
   color: rgba(255,255,255, 0);
 `;
 
@@ -55,13 +57,15 @@ const RInputDashed = (props: Props) => {
     value,
     name,
     label,
-    max = 999999999999,
+    suffix,
+    max = 999999999,
     numbers = false,
     onChange,
     onInput,
+    onError,
   } = props;
 
-  const [ lazyValue, setLazyValue ] = useState(numbers ? inputFloat(value, max) : value);
+  const [ lazyValue, setLazyValue ] = useState(`${numbers ? inputFloat(value, max) : value}${suffix || ''}`);
 
   return (
     <InputWrapper>
@@ -78,9 +82,10 @@ const RInputDashed = (props: Props) => {
         name={name}
         value={value}
         numbers={numbers}
-        lastSymbol=" €"
+        suffix={suffix}
         onInput={onInput}
         onChange={onChange}
+        onError={onError}
         onChangeLazyValue={setLazyValue}
       />
 

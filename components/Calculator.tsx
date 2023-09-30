@@ -101,7 +101,7 @@ export default function Calculator(props: Props) {
     className,
   } = props;
 
-  const onInput = (
+  const onChangeValues = (
     value: string | number,
     key: string,
   ) => {
@@ -176,7 +176,7 @@ export default function Calculator(props: Props) {
           state={state}
           monthly={monthly}
           tableState={tableState}
-          onInput={onInput}
+          onChange={onChangeValues}
         />
       </Wrapper>
     </CalculatorBlock>

@@ -1,7 +1,9 @@
-import styled from 'styled-components';
-
-import ReactSlider from 'react-slider';
 import type { ReactSliderProps } from 'react-slider';
+
+import styled from 'styled-components';
+import { useState, useRef } from 'react';
+import { CSSTransition, SwitchTransition } from 'react-transition-group';
+import ReactSlider from 'react-slider';
 
 import { splitThousands } from '@/assets/ts/textUtils';
 
@@ -10,6 +12,7 @@ import RInputDashed from './RInputDashed';
 type Props = {
   value: number,
   name: string,
+  suffix?: string,
   label?: string,
   min?: ReactSliderProps['min'],
   max?: ReactSliderProps['max'],
@@ -28,6 +31,14 @@ const Wrapper = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   padding-bottom: 18px;
+`;
+
+const Error = styled.div`
+  position: absolute;
+  right: 0;
+  bottom: 40px;
+  font-size: 10px;
+  color: ${({ theme }) => theme.colors.accent2};
 `;
 
 const Slider = styled(ReactSlider)`
@@ -95,9 +106,15 @@ const RSlider = (props: Props) => {
     label,
     className,
     withInput,
+    suffix,
     onChange,
     inputIgnoreMax,
   } = props;
+
+  const [ error, setError ] = useState<string | null>(null);
+  const startErrTr = useRef<HTMLDivElement | null>(null);
+  const endErrTr = useRef<HTMLDivElement | null>(null);
+  const nodeRef = error ? startErrTr : endErrTr;
 
   const Mark: ReactSliderProps['renderMark'] = (props) => marks?.length ? (
     <StyledMark
@@ -112,12 +129,13 @@ const RSlider = (props: Props) => {
 
   const onChangeSlider: ReactSliderProps['onChange'] = (value, index) => {
     if (onChange) {
+      setError(null);
       onChange(value, name);
     }
   };
 
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       { withInput && (
         <RInputDashed
           numbers
@@ -125,13 +143,14 @@ const RSlider = (props: Props) => {
           label={label}
           name={name}
           value={value}
+          suffix={suffix}
           onInput={onChange}
+          onError={setError}
         />
       )}
 
       <Slider
         value={value}
-        className={className}
         min={min}
         max={max}
         marks={marks}
@@ -141,6 +160,21 @@ const RSlider = (props: Props) => {
         onChange={onChangeSlider}
         step={step}
       />
+
+      <SwitchTransition>
+        <CSSTransition
+          key={error}
+          nodeRef={nodeRef}
+          classNames="fade"
+          addEndListener={(done) => {
+            if (nodeRef?.current) {
+              nodeRef.current.addEventListener("transitionend", done, false);
+            }
+          }}
+        >
+          <Error ref={nodeRef}>{error}</Error>
+        </CSSTransition>
+      </SwitchTransition>
     </Wrapper>
   );
 };
