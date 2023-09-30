@@ -13,7 +13,7 @@ type Props = {
   autoComplete?: string,
   className?: string,
   blue?: boolean,
-  onChange?: Function,
+  onChange?: (value: string | number, name: string) => void,
   onInput?: Function,
   id?: string,
 };
