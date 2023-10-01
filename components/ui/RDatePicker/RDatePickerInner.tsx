@@ -16,6 +16,11 @@ const Element = styled(CalenadarElement)`
   width: 33.33%;
 `;
 
+const Wrapper = styled(Calendar)`
+  padding-left: 16px;
+  padding-right: 16px;
+`;
+
 const RDatePickerInner = (props: Props) => {
   const {
     datePickerHooks,
@@ -37,7 +42,7 @@ const RDatePickerInner = (props: Props) => {
   const afterSelect: ActiveCalendar = activeCalendar === 'year' ? 'month' : 'date';
 
   return (
-    <Calendar>
+    <Wrapper>
       {activeCalendar === 'year' ?
         years.map((dbYear) => (
           <CalendarElement
@@ -62,7 +67,7 @@ const RDatePickerInner = (props: Props) => {
             </CalendarElement>
           ))
         )}
-    </Calendar>
+    </Wrapper>
   );
 };
 
@@ -77,15 +82,9 @@ const CalendarElement = (props: {
     buttonProps,
   } = props;
 
-  let className = '';
-
-  if (selected) {
-    className += '_selected ';
-  }
-
   return (
     <Element
-      className={className}
+      $selected={selected}
     >
       <CalendarButton
         {...buttonProps}
