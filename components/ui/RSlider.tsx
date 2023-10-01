@@ -144,7 +144,7 @@ const RSlider = (props: Props) => {
           name={name}
           value={value}
           suffix={suffix}
-          onInput={onChange}
+          onChange={onChange}
           onError={setError}
         />
       )}

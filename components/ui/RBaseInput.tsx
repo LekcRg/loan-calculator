@@ -55,7 +55,6 @@ const RBaseInput = (props: Props) => {
   const isAllowed = (values: NumberFormatValues) => {
     const { floatValue } = values;
     const isAllow = Boolean(max !== undefined && Number(floatValue) <= max && Number(floatValue) >= 1);
-    console.log(`${Number(floatValue)} <= ${max} && ${Number(floatValue)} >= 1`);
 
     if (!isAllow && onError) {
       onError(`The max value is ${max}`);
