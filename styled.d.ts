@@ -15,6 +15,9 @@ declare module 'styled-components' {
       dark4: string,
       light1: string,
       light3: string,
+      red1: string,
+      red2: string,
+      red3: string,
     },
     fontFamily: string,
   }

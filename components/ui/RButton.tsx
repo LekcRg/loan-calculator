@@ -1,35 +1,77 @@
-import { MouseEventHandler, ReactNode, MouseEvent } from 'react';
+import { ReactNode, MouseEvent } from 'react';
 
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 type Props = {
-  children: ReactNode,
-  onClick?: Function,
-  className?: string,
+  children: ReactNode;
+  className?: string;
+  icon?: string,
+  type?: 'default' | 'accent' | 'accent-color' | 'red' | 'icon';
+  onClick?: (ev: MouseEvent<HTMLButtonElement>) => void;
 }
 
-const Button = styled.button`
-  background: #616161;
-  border-radius: 4px;
-  padding: 10px 15px;
+const Button = styled.button<{$type?: Props['type']}>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 12px 24px;
   cursor: pointer;
   border: none;
   outline: none;
   transition: background .3s ease;
 
-  &:hover {
-    background: #515151;
-  }
+  ${({ $type }) => ($type === 'default' || $type === 'accent-color') && css`
+    background: ${({ theme }) => theme.colors.dark3};
+
+    &:hover {
+      background: ${({ theme }) => theme.colors.dark4};
+    }
+  `}
+  
+  ${({ $type }) => ($type === 'accent' || $type === 'default') && css`
+    color: ${({ theme }) => theme.colors.light1};
+  `}
+
+  ${({ $type }) => $type === 'accent' && css`
+    background: ${({ theme }) => theme.colors.accent};
+
+    &:hover {
+      background: ${({ theme }) => theme.colors.accent3};
+    }
+  `}
+
+  ${({ $type }) => $type === 'accent-color' && css`
+    color: ${({ theme }) => theme.colors.accent};
+  `}
+
+  ${({ $type }) => $type === 'red' && css`
+    color: ${({ theme }) => theme.colors.red1};
+    background: ${({ theme }) => theme.colors.red2};
+
+    &:hover {
+      background: ${({ theme }) => theme.colors.red3};
+    }
+  `}
+`;
+
+const Icon = styled.svg<{$big?: boolean}>`
+  width: ${({ $big }) => $big ? '24px' : '16px'};
+  height: ${({ $big }) => $big ? '24px' : '16px'};
+  margin-left: ${({ $big }) => $big ? '0' : '8px'};
 `;
 
 const RButton = (props: Props) => {
   const {
+    type = 'default',
+    icon,
     children,
-    onClick,
     className,
+    onClick,
   } = props;
 
-  const onClickBtn = (ev: MouseEvent) => {
+  const onClickBtn = (ev: MouseEvent<HTMLButtonElement>) => {
     if (onClick) {
       onClick(ev);
     }
@@ -37,10 +79,17 @@ const RButton = (props: Props) => {
 
   return (
     <Button
+      $type={type}
       onClick={onClickBtn}
       className={className}
     >
       { children }
+
+      { icon && (
+        <Icon>
+          <use xlinkHref={`#${icon}`} viewBox="0 0 16 16"></use>
+        </Icon>
+      )}
     </Button>
   );
 };

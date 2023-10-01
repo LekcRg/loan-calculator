@@ -1,7 +1,9 @@
-import { useState, useEffect, MouseEvent, ChangeEvent } from 'react';
+import { useState, useEffect, MouseEvent } from 'react';
 import styled from 'styled-components';
 
 import type { EarlyPayoff } from '@/types/Calculator';
+
+// import type  from '@/components/ui/RButton';
 
 import RInput from '@/components/ui/RInput';
 import RButton from '@/components/ui/RButton';
@@ -73,7 +75,7 @@ const CalculatorEarlyPayoff = (props: Props) => {
   const [ payoffs, setPayoffs ] = useState<EarlyPayoff[]>(props.payoffs);
   const [ id, setId ] = useState<number>(payoffs?.length ? payoffs[payoffs.length - 1].id + 1 : 1);
 
-  const onAddEarlyPayoff = (ev: React.MouseEvent<HTMLButtonElement>) => {
+  const onAddEarlyPayoff = (ev: MouseEvent<HTMLButtonElement>) => {
     let nextPayoffDate = addMonth(payoffs?.length ? payoffs[payoffs.length - 1].date : date);
 
     setPayoffs([
@@ -164,7 +166,10 @@ const CalculatorEarlyPayoff = (props: Props) => {
                 onChange={onChangeValues}
               />
 
-              <Button onClick={() => onClickRemove(i)}>
+              <Button
+                onClick={() => onClickRemove(i)}
+                type="red"
+              >
                 Remove
               </Button>
             </PayoffItem>
@@ -172,7 +177,11 @@ const CalculatorEarlyPayoff = (props: Props) => {
         }
       </List>
 
-      <RButton onClick={onAddEarlyPayoff}>
+      <RButton
+        icon="plus"
+        onClick={onAddEarlyPayoff}
+        type="accent"
+      >
         Add early payoff
       </RButton>
     </div>

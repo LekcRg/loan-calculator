@@ -17,6 +17,9 @@ const darkTheme: DefaultTheme = {
     dark4: '#3A3B3C',
     light1: '#F9F9F9',
     light3: '#929292',
+    red1: '#FF5656',
+    red2: '#2C1F1F',
+    red3: '#261A1A',
   },
   fontFamily: '\'Montserrat\', sans-serif',
 };
