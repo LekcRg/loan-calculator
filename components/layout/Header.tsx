@@ -2,7 +2,7 @@
 
 import styled from 'styled-components';
 
-import Image from 'next/image';
+// import Image from 'next/image';
 
 import logoImg from '@/assets/icons/logo.svg';
 import githubImg from '@/assets/icons/github.svg';
@@ -31,9 +31,11 @@ const LogoWrapper = styled.div`
   align-items: flex-end;
 `;
 
-const Logo = styled(Image)`
+const Logo = styled.svg`
   position: relative;
   padding-right: 10px;
+  height: 24px;
+  color: ${({ theme }) => theme.colors.accent}
 `;
 
 const Title = styled.h2`
@@ -70,7 +72,12 @@ const Link = styled.a`
   justify-content: center;
 `;
 
-const LinkImage = styled(Image)`
+// const LinkImage = styled(Image)`
+//   width: 20px;
+//   height: 20px;
+// `;
+
+const SvgLink = styled.svg`
   width: 20px;
   height: 20px;
 `;
@@ -80,10 +87,9 @@ const Header = () => {
     <HeaderBlock className="container">
       <Container>
         <LogoWrapper>
-          <Logo
-            src={logoImg}
-            alt="Minimite"
-          />
+          <Logo viewBox="0 0 106 24">
+            <use xlinkHref="#logo"></use>
+          </Logo>
 
           <Title>Loan calculator</Title>
         </LogoWrapper>
@@ -92,10 +98,9 @@ const Header = () => {
           target="_blank"
           href="https://github.com/LekcRg/loan-calculator"
         >
-          <LinkImage
-            src={githubImg}
-            alt="github"
-          />
+          <SvgLink viewBox="0 0 16 16">
+            <use xlinkHref="#github"></use>
+          </SvgLink>
         </Link>
       </Container>
     </HeaderBlock>

@@ -6,7 +6,8 @@ import styled from 'styled-components';
 import { roundAndSplitThousands } from '@/assets/ts/textUtils';
 import { calculateTable } from '@/assets/ts/calculator';
 
-import type { LoanData, TableRow, EarlyPayoff, CalculateTableData } from '@/types/Calculator';
+import type { LoanData, EarlyPayoff, CalculateTableData } from '@/types/Calculator';
+import { media } from '@/styles/mixins';
 
 type Props = {
   className?: string,
@@ -31,9 +32,25 @@ const Title = styled.h4`
   font-size: 32px;
 `;
 
+const TableScroll = styled.div`
+  width: 100%;
+
+  ${media.mobile} {
+    overflow: auto;
+  }
+`;
+
 const Table = styled.table`
   width: 100%;
   border-spacing: 0;
+`;
+
+const TableHead = styled.tr`
+  position: sticky;
+  top: 0;
+  left: 0;
+  background: ${({ theme }) => theme.colors.dark1};
+  z-index: 1;
 `;
 
 const HeadCell = styled.th`
@@ -70,12 +87,14 @@ const Row = styled.tr`
   background: rgba(20, 20, 20, 0);
   transition: all .3s ease;
 
-  &:hover {
-    background: ${({ theme }) => theme.colors.dark2};
+  @media (hover:hover) {
+    &:hover {
+      background: ${({ theme }) => theme.colors.dark2};
 
-    ${CellValue} {
-      font-weight: 600;
-      transform: scale(1.15);
+      ${CellValue} {
+        font-weight: 600;
+        transform: scale(1.15);
+      }
     }
   }
 
@@ -83,8 +102,10 @@ const Row = styled.tr`
     background-color: ${({ theme }) => theme.colors.accent5};
     color: ${({ theme }) => theme.colors.accent};
 
-    &:hover {
-      background-color: ${({ theme }) => theme.colors.accent6};
+    @media (hover:hover) {
+      &:hover {
+        background-color: ${({ theme }) => theme.colors.accent6};
+      }
     }
   }
 `;
@@ -115,76 +136,78 @@ const CalculatorTable = (props: Props) => {
         <Title>
           Loan table
         </Title>
-      </Header> 
-      <Table>
-        <tbody>
-          <tr>
-            <HeadCell>
+      </Header>
+      <TableScroll>
+        <Table>
+          <tbody>
+            <TableHead>
+              <HeadCell>
               id
-            </HeadCell>
-            <HeadCell>
+              </HeadCell>
+              <HeadCell>
               Date
-            </HeadCell>
-            <HeadCell>
+              </HeadCell>
+              <HeadCell>
               Full payment
-            </HeadCell>
-            <HeadCell>
+              </HeadCell>
+              <HeadCell>
               Principal
-            </HeadCell>
-            <HeadCell>
+              </HeadCell>
+              <HeadCell>
               Interest
-            </HeadCell>
-            <HeadCell>
+              </HeadCell>
+              <HeadCell>
               Ending balance
-            </HeadCell>
-          </tr>
-          {
-            tableState?.months?.map((item, i) => (
-              <Row
-                key={i}
-                className={item.isPayoff ? '_payoff' : ''}
-              >
-                <Cell>
-                  <CellValue>
-                    {
-                      !item.isPayoff && (item?.index !== undefined)
-                        ? item.index + 1 
-                        : ''
-                    }
-                  </CellValue>
-                </Cell>
-                <Cell>
-                  <CellValue>
-                    { item.date }
-                  </CellValue>
-                </Cell>
-                <Cell>
-                  <CellValue>
-                    { roundAndSplitThousands(item.amount) }
-                  </CellValue>
-                </Cell>
-                <Cell>
-                  <CellValue>
-                    { roundAndSplitThousands(item.principal) }
-                  </CellValue>
-                </Cell>
-                <Cell>
-                  <CellValue>
-                    { roundAndSplitThousands(item.interest) }
-                  </CellValue>
-                </Cell>
-                <Cell>
-                  <CellValue>
-                    {
-                      roundAndSplitThousands(item.ending)
-                    }
-                  </CellValue>
-                </Cell>
-              </Row>
-            ))
-          }
-        </tbody>
-      </Table>
+              </HeadCell>
+            </TableHead>
+            {
+              tableState?.months?.map((item, i) => (
+                <Row
+                  key={i}
+                  className={item.isPayoff ? '_payoff' : ''}
+                >
+                  <Cell>
+                    <CellValue>
+                      {
+                        !item.isPayoff && (item?.index !== undefined)
+                          ? item.index + 1 
+                          : ''
+                      }
+                    </CellValue>
+                  </Cell>
+                  <Cell>
+                    <CellValue>
+                      { item.date }
+                    </CellValue>
+                  </Cell>
+                  <Cell>
+                    <CellValue>
+                      { roundAndSplitThousands(item.amount) }
+                    </CellValue>
+                  </Cell>
+                  <Cell>
+                    <CellValue>
+                      { roundAndSplitThousands(item.principal) }
+                    </CellValue>
+                  </Cell>
+                  <Cell>
+                    <CellValue>
+                      { roundAndSplitThousands(item.interest) }
+                    </CellValue>
+                  </Cell>
+                  <Cell>
+                    <CellValue>
+                      {
+                        roundAndSplitThousands(item.ending)
+                      }
+                    </CellValue>
+                  </Cell>
+                </Row>
+              ))
+            }
+          </tbody>
+        </Table>
+      </TableScroll>
     </Wrapper>
   );
 };

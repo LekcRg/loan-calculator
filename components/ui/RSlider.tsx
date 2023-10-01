@@ -99,7 +99,7 @@ const RSlider = (props: Props) => {
   const {
     value,
     name,
-    min = 0,
+    min = 1,
     max,
     marks,
     step,

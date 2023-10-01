@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import { CSSTransition } from 'react-transition-group';
 
 import { useDatePicker } from '@rehookify/datepicker';
 
@@ -56,17 +57,11 @@ const Button = styled.button<{ $blue?: boolean }>`
 const DatePicker = styled.div`
   position: absolute;
   top: calc(100% + 10px);
-  padding: 10px;
-  width: 270px;
-  background-color: #000;
+  width: 290px;
+  background-color: ${({ theme }) => theme.colors.dark2};
+  border-radius: 8px;
   z-index: 2;
-  opacity: 0;
-  pointer-events: none;
-
-  &._visible {
-    opacity: 1;
-    pointer-events: all;
-  }
+  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.20);
 `;
 
 const RDatePicker = (props: Props) => {
@@ -86,6 +81,7 @@ const RDatePicker = (props: Props) => {
   const [ selectedDates, onDatesChange ] = useState<Date[]>([ date ]);
   const [ offsetDate, onOffsetChange ] = useState<Date>(date);
   const [ isShow, changeIsShow ] = useState<boolean>(false);
+  const datePickerEl = useRef<HTMLDivElement | null>(null);
 
   const datePickerHooks = useDatePicker({
     selectedDates,
@@ -189,11 +185,19 @@ const RDatePicker = (props: Props) => {
         { prettyDate }
       </Button>
 
-      {isShow ? (
-        <DatePicker className="_visible">
+      <CSSTransition
+        in={isShow}
+        nodeRef={datePickerEl}
+        timeout={200}
+        classNames="fade"
+        unmountOnExit
+      >
+        <DatePicker
+          ref={datePickerEl}
+        >
           <RDatePickerHeader
-            prevProps={() => headerPrevProps()}
-            nextProps={() => headerNextProps()}
+            prevProps={headerPrevProps}
+            nextProps={headerNextProps}
             calendars={calendars}
             activeCalendar={activeCalendar}
             changeActiveCalendar={changeActiveCalendar}
@@ -218,7 +222,7 @@ const RDatePicker = (props: Props) => {
               : ''
           }
         </DatePicker>
-      ) : ''}
+      </CSSTransition>
     </Wrapper>
   );
 };

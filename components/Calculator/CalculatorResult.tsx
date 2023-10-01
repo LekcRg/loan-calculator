@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { media } from '@/styles/mixnis';
+import { media } from '@/styles/mixins';
 
 import { RNumber } from '@/components/ui/RNumber';
 import { CalculateTableData } from '@/types/Calculator';

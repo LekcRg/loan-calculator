@@ -8,6 +8,10 @@ type Props = {
   datePickerHooks: DatePickerHooks,
 }
 
+const Wrapper = styled.div`
+  padding: 0 16px;
+`;
+
 const Width = css`
   width: 14.28%;
 `;
@@ -18,12 +22,14 @@ const Day = styled(CalenadarElement)`
 
 const Weekdays = styled.ul`
   display: flex;
+  padding: 8px 0;
 `;
 
 const Weekday = styled.li`
   ${Width}
   list-style-type: none;
   text-align: center;
+  color: ${({ theme }) => theme.colors.light3};
 `;
 
 const RDatePickerCalendar = (props: Props) => {
@@ -44,7 +50,7 @@ const RDatePickerCalendar = (props: Props) => {
   const { month, days } = calendars[0];
 
   return (
-    <>
+    <Wrapper>
       <Weekdays>
         {weekDays.map((day) => (
           <Weekday
@@ -55,32 +61,21 @@ const RDatePickerCalendar = (props: Props) => {
         ))}
       </Weekdays>
       <Calendar>
-        {days.map((dpDay) => {
-          let className = '';
-
-          if (!dpDay.inCurrentMonth) {
-            className += '_not-current ';
-          }
-
-          if (dpDay.selected) {
-            className += '_selected ';
-          }
-
-          return (
-            <Day
-              className={className}
-              key={dpDay.$date.toDateString()}
+        {days.map((dpDay) => (
+          <Day
+            $selected={dpDay.selected}
+            $notCurrent={!dpDay.inCurrentMonth}
+            key={dpDay.$date.toDateString()}
+          >
+            <CalendarButton
+              {...dayButton(dpDay)}
             >
-              <CalendarButton
-                {...dayButton(dpDay)}
-              >
-                {dpDay.day}
-              </CalendarButton>
-            </Day>
-          );
-        })}
+              {dpDay.day}
+            </CalendarButton>
+          </Day>
+        ))}
       </Calendar>
-    </>
+    </Wrapper>
   );
 };
 

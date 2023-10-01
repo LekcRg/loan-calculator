@@ -12,6 +12,7 @@ declare module 'styled-components' {
       dark1: string,
       dark2: string,
       dark3: string,
+      dark4: string,
       light1: string,
       light3: string,
     },

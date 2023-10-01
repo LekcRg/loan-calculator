@@ -56,6 +56,16 @@ const GlobalStyles = createGlobalStyle`
     }
   }
 
+  .svg-sprite {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    display: none;
+    overflow: hidden;
+  }
+
   .fade-enter {
     opacity: 0;
   }

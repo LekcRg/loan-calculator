@@ -16,12 +16,14 @@ type Props = {
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   width: 100%;
-  padding: 0 10px;
+  padding: 10px 10px;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.dark4};
+  user-select: none;
 `;
 
 const HeaderTitle = styled.div`
-  width: 100%;
   text-align: center;
 `;
 
@@ -44,17 +46,14 @@ const HeaderBtn = styled.button`
   }
 `;
 
-const HeaderArrow = styled.div`
-  width: 10px;
-  height: 10px;
-  border-width: 2px 2px 0 0;
-  border-color: #ddd;
-  border-style: solid;
-  transform: rotate(45deg);
+const HeaderArrow = styled.svg`
+  width: 18px;
+  height: 18px;
+  outline: none;
   cursor: pointer;
 
   &._prev {
-    transform: rotate(-135deg);
+    transform: rotate(180deg);
   }
 `;
 
@@ -72,10 +71,18 @@ const RDatePickerHeader = (props: Props) => {
 
   return (
     <Header>
-      <HeaderArrow 
+      {/* <HeaderArrow 
         className="_prev"
         {...prevProps()}
-      />
+      /> */}
+
+      <HeaderArrow 
+        {...prevProps()}
+        className="_prev"
+        viewBox="0 0 18 18"
+      >
+        <use xlinkHref="#arr-right"></use>
+      </HeaderArrow>
 
       <HeaderTitle>
         {
@@ -105,9 +112,16 @@ const RDatePickerHeader = (props: Props) => {
         }
       </HeaderTitle>
 
-      <HeaderArrow
+      {/* <HeaderArrow
         {...nextProps()}
-      />
+      /> */}
+
+      <HeaderArrow 
+        {...nextProps()}
+        viewBox="0 0 18 18"
+      >
+        <use xlinkHref="#arr-right"></use>
+      </HeaderArrow>
     </Header>
   );
 };

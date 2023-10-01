@@ -1,4 +1,4 @@
-import { media } from '@/styles/mixnis';
+import { media } from '@/styles/mixins';
 import styled from 'styled-components';
 
 type Props = {

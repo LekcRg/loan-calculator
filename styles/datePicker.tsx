@@ -1,16 +1,19 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Calendar = styled.ul`
   display: flex;
   flex-wrap: wrap;
+  padding: 8px 0 16px;
+  gap: 8px 0;
 `;
 
 export const CalendarButton = styled.button`
   width: 100%;
   height: 30px;
-  border: 1px solid ${({ theme }) => theme.colors.light1};
+  border: none;
+  border-radius: 4px;
+  background: transparent;
   cursor: pointer;
-  background: #3b3b3b;
   transition: background .2s ease;
 
   &:hover {
@@ -18,14 +21,22 @@ export const CalendarButton = styled.button`
   }
 `;
 
-export const CalenadarElement = styled.li`
+export const CalenadarElement = styled.li<{
+  $selected?: boolean,
+  $notCurrent?: boolean
+}>`
   list-style-type: none;
 
-  &._not-current ${CalendarButton} {
-    opacity: .5;
-  }
+  ${props => props.$notCurrent && css`
+    ${CalendarButton} {
+      color: ${({ theme }) => theme.colors.dark4}
+    }
+  `}
 
-  &._selected ${CalendarButton} {
-    background: ${({ theme }) => theme.colors.accent};
-  }
+  ${props => props.$selected && css`
+    ${CalendarButton} {
+      color: ${({ theme }) => theme.colors.light1};
+      background: ${({ theme }) => theme.colors.accent};
+    }
+  `}
 `;

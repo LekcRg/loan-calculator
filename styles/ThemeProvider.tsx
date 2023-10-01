@@ -14,6 +14,7 @@ const darkTheme: DefaultTheme = {
     dark1: '#0D0E0F',
     dark2: '#181818',
     dark3: '#222',
+    dark4: '#3A3B3C',
     light1: '#F9F9F9',
     light3: '#929292',
   },
