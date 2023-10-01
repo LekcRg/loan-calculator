@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { media } from '@/styles/mixins';
 
 import { roundAndSplitThousands } from '@/assets/ts/textUtils';
 import { calculateTable } from '@/assets/ts/calculator';
+import RButton from '@/components/ui/RButton';
 
 import type { LoanData, EarlyPayoff, CalculateTableData } from '@/types/Calculator';
-import { media } from '@/styles/mixins';
 
 type Props = {
   className?: string,
@@ -111,6 +112,8 @@ const Row = styled.tr`
 `;
 
 const CalculatorTable = (props: Props) => {
+  // TODO: Components for rows, head etc
+
   const {
     className,
     calculateData,
@@ -120,6 +123,33 @@ const CalculatorTable = (props: Props) => {
   } = props;
 
   const [ tableState, setTableState ] = useState<CalculateTableData>(initialState);
+
+  const exportCSV = () => {
+    const arrCSV = [
+      [ '#', 'Date', 'Full payment', 'Principal', 'Interest', 'Ending balance' ],
+      ...tableState.months.map(item => {
+        return [
+          (item?.index !== undefined && !isNaN(item?.index)) ? item.index + 1 : '',
+          `${item.date}`,
+          Math.round(item.amount * 100) / 100,
+          Math.round(item.principal * 100) / 100,
+          item.isPayoff ? 'Reduce loan term' : Math.round(item.interest * 100) / 100,
+          Math.round(item.ending * 100) / 100,
+        ].join(',');
+      }),
+    ];
+
+    const blob = new Blob([ arrCSV.join('\n') ], { type: 'text/csv' });
+
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.setAttribute('href', url);
+
+    a.setAttribute('download', 'minimite.csv');
+
+    a.click();
+  };
 
   useEffect(() => {
     if (!calculateData || !monthly || !calculateData?.amount || !calculateData?.rate || !calculateData?.term) {
@@ -136,28 +166,35 @@ const CalculatorTable = (props: Props) => {
         <Title>
           Loan table
         </Title>
+
+        <RButton
+          type="accent-color"
+          onClick={exportCSV}
+        >
+          Export
+        </RButton>
       </Header>
       <TableScroll>
         <Table>
           <tbody>
             <TableHead>
               <HeadCell>
-              id
+                id
               </HeadCell>
               <HeadCell>
-              Date
+                Date
               </HeadCell>
               <HeadCell>
-              Full payment
+                Full payment
               </HeadCell>
               <HeadCell>
-              Principal
+                Principal
               </HeadCell>
               <HeadCell>
-              Interest
+                Interest
               </HeadCell>
               <HeadCell>
-              Ending balance
+                Ending balance
               </HeadCell>
             </TableHead>
             {
