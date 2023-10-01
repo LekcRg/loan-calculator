@@ -9,9 +9,10 @@ import RDatePicker from '@/components/ui/RDatePicker';
 import RSelect from '@/components/ui/RSelect';
 
 type Props = {
-  onChange: Function,
-  payoffs: EarlyPayoff[],
   date: string,
+  payoffs: EarlyPayoff[],
+  className?: string,
+  onChange: Function,
 }
 
 const Title = styled.h4`
@@ -64,8 +65,9 @@ const addMonth = (toAddDate: string) => {
 
 const CalculatorEarlyPayoff = (props: Props) => {
   const {
-    onChange,
     date,
+    className = '',
+    onChange,
   } = props;
 
   const [ payoffs, setPayoffs ] = useState<EarlyPayoff[]>(props.payoffs);
@@ -116,7 +118,7 @@ const CalculatorEarlyPayoff = (props: Props) => {
   }, [ payoffs, onChange ]);
 
   return (
-    <div className="container">
+    <div className={`container ${className}`}>
       <List>
         {
           payoffs.map((item, i: number) => (

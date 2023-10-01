@@ -24,11 +24,11 @@ const MainBlock = styled.main`
 `;
 
 const Calculator = styled(CalculatorComponent)`
-  margin-bottom: 20px;
+  margin-bottom: 48px;
 `;
 
 const CalculatorEarlyPayoff = styled(CalculatorEarlyPayoffComponent)`
-  margin-bottom: 20px;
+  margin-bottom: 48px;
 `;
 
 export default function Home(props: Props) {

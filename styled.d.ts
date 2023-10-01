@@ -7,6 +7,8 @@ declare module 'styled-components' {
       accent2: string,
       accent3: string,
       accent4: string,
+      accent5: string,
+      accent6: string,
       dark1: string,
       dark2: string,
       dark3: string,
