@@ -112,6 +112,8 @@ const RSlider = (props: Props) => {
   } = props;
 
   const [ error, setError ] = useState<string | null>(null);
+  const [ lazyValue, setLazyValue ] = useState<number>(value);
+  const [ ignoreInput, setIgnoreInput ] = useState<boolean>(false);
   const startErrTr = useRef<HTMLDivElement | null>(null);
   const endErrTr = useRef<HTMLDivElement | null>(null);
   const nodeRef = error ? startErrTr : endErrTr;
@@ -127,11 +129,28 @@ const RSlider = (props: Props) => {
     </StyledMark>
   ) : null;
 
+  const onBeforeChange: ReactSliderProps['onBeforeChange'] = (value, index) => {
+    setIgnoreInput(true);
+  };
+
   const onChangeSlider: ReactSliderProps['onChange'] = (value, index) => {
+    setError(null);
+    setLazyValue(value);
+  };
+
+  const onAfterChange: ReactSliderProps['onAfterChange'] = (value, index) => {
     if (onChange) {
-      setError(null);
       onChange(value, name);
     }
+    setIgnoreInput(false);
+  };
+
+  const onChangeInput = (value: string | number, name: string) => {
+    if (ignoreInput || !onChange) {
+      return;
+    }
+
+    onChange(value, name);
   };
 
   return (
@@ -142,9 +161,9 @@ const RSlider = (props: Props) => {
           max={inputIgnoreMax ? undefined : max}
           label={label}
           name={name}
-          value={value}
+          value={lazyValue}
           suffix={suffix}
-          onChange={onChange}
+          onChange={onChangeInput}
           onError={setError}
         />
       )}
@@ -158,6 +177,8 @@ const RSlider = (props: Props) => {
         renderThumb={Thumb}
         renderMark={Mark}
         onChange={onChangeSlider}
+        onAfterChange={onAfterChange}
+        onBeforeChange={onBeforeChange}
         step={step}
       />
 
