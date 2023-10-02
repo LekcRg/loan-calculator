@@ -8,15 +8,20 @@ import type { ActiveCalendar } from '@/types/RDatePicker';
 import RDatePickerHeader from '@/components/ui/RDatePicker/RDatePickerHeader';
 import RDatePickerCalendar from '@/components/ui/RDatePicker/RDatePickerCalendar';
 import RDatePickerInner from '@/components/ui/RDatePicker/RDatePickerInner';
-import { dateNowUTC, dateToString, getPrettyDate, stringToDate } from '@/assets/ts/dateUtils';
+import {
+  dateNowUTC,
+  dateToString,
+  getPrettyDate,
+  stringToDate,
+} from '@/assets/ts/dateUtils';
 
 type Props = {
-  name: string,
-  label?: string,
-  value?: string,
-  onChange?: Function,
-  type?: ActiveCalendar
-}
+  name: string;
+  label?: string;
+  value?: string;
+  onChange?: Function;
+  type?: ActiveCalendar;
+};
 
 const Wrapper = styled.div`
   position: relative;
@@ -71,20 +76,14 @@ const DatePicker = styled.div`
 `;
 
 const RDatePicker = (props: Props) => {
-  const {
-    label,
-    value,
-    name,
-    onChange,
-    type = 'date',
-  } = props;
+  const { label, value, name, onChange, type = 'date' } = props;
 
   let date = stringToDate(value || '') || dateNowUTC();
 
-  const [ activeCalendar, changeActiveCalendar ] = useState<ActiveCalendar>(type);
-  const [ selectedDates, onDatesChange ] = useState<Date[]>([ date ]);
-  const [ offsetDate, onOffsetChange ] = useState<Date>(date);
-  const [ isShow, changeIsShow ] = useState<boolean>(false);
+  const [activeCalendar, changeActiveCalendar] = useState<ActiveCalendar>(type);
+  const [selectedDates, onDatesChange] = useState<Date[]>([date]);
+  const [offsetDate, onOffsetChange] = useState<Date>(date);
+  const [isShow, changeIsShow] = useState<boolean>(false);
 
   const datePickerHooks = useDatePicker({
     selectedDates,
@@ -98,10 +97,7 @@ const RDatePicker = (props: Props) => {
   });
 
   const {
-    data: { 
-      calendars,
-      years,
-    },
+    data: { calendars, years },
     propGetters: {
       addOffset,
       subtractOffset,
@@ -110,9 +106,10 @@ const RDatePicker = (props: Props) => {
     },
   } = datePickerHooks;
 
-  const title = activeCalendar === 'year' 
-    ? `${years[0].year} - ${years[years.length - 1].year}`
-    : undefined;
+  const title =
+    activeCalendar === 'year'
+      ? `${years[0].year} - ${years[years.length - 1].year}`
+      : undefined;
 
   const headerNextProps = () => {
     if (activeCalendar === 'date') {
@@ -123,7 +120,7 @@ const RDatePicker = (props: Props) => {
       return nextYearsButton();
     }
   };
-  
+
   const headerPrevProps = () => {
     if (activeCalendar === 'date') {
       return subtractOffset({ months: 1 });
@@ -138,7 +135,10 @@ const RDatePicker = (props: Props) => {
     changeIsShow(false);
   };
 
-  const onChangeCalendar = (nextActiveCalendar: ActiveCalendar, newDate: Date): void => {
+  const onChangeCalendar = (
+    nextActiveCalendar: ActiveCalendar,
+    newDate: Date,
+  ): void => {
     if (type !== activeCalendar) {
       changeActiveCalendar(nextActiveCalendar);
     } else {
@@ -146,7 +146,7 @@ const RDatePicker = (props: Props) => {
       const month = newDate.getUTCMonth() + 1;
       const day = date.getUTCDate();
 
-      onDatesChange([ new Date(Date.UTC(year, month, day)) ]);
+      onDatesChange([new Date(Date.UTC(year, month, day))]);
     }
   };
 
@@ -162,30 +162,19 @@ const RDatePicker = (props: Props) => {
 
       onChange(newValue, name);
     }
-  }, [ selectedDates, onChange, name, value ]);
+  }, [selectedDates, onChange, name, value]);
 
   return (
     <Wrapper>
-      <Overlay
-        className={isShow ? '_visible' : ''}
-        onClick={clickOverlay}
-      />
+      <Overlay className={isShow ? '_visible' : ''} onClick={clickOverlay} />
 
-      {
-        label ?
-          <Label
-            onClick={() => changeIsShow(!isShow)}
-          >
-            { label }
-          </Label>
-          : ''
-      }
+      {label ? (
+        <Label onClick={() => changeIsShow(!isShow)}>{label}</Label>
+      ) : (
+        ''
+      )}
 
-      <Button
-        onClick={() => changeIsShow(!isShow)}
-      >
-        { prettyDate }
-      </Button>
+      <Button onClick={() => changeIsShow(!isShow)}>{prettyDate}</Button>
 
       {isShow ? (
         <DatePicker className="_visible">
@@ -198,25 +187,25 @@ const RDatePicker = (props: Props) => {
             title={title}
           />
 
-          {
-            activeCalendar === 'date' ?
-              <RDatePickerCalendar
-                datePickerHooks={datePickerHooks}
-              />
-              : ''
-          }
+          {activeCalendar === 'date' ? (
+            <RDatePickerCalendar datePickerHooks={datePickerHooks} />
+          ) : (
+            ''
+          )}
 
-          {
-            activeCalendar === 'month' || activeCalendar === 'year' ?
-              <RDatePickerInner
-                datePickerHooks={datePickerHooks}
-                activeCalendar={activeCalendar}
-                changeActiveCalendar={onChangeCalendar}
-              />
-              : ''
-          }
+          {activeCalendar === 'month' || activeCalendar === 'year' ? (
+            <RDatePickerInner
+              datePickerHooks={datePickerHooks}
+              activeCalendar={activeCalendar}
+              changeActiveCalendar={onChangeCalendar}
+            />
+          ) : (
+            ''
+          )}
         </DatePicker>
-      ) : ''}
+      ) : (
+        ''
+      )}
     </Wrapper>
   );
 };

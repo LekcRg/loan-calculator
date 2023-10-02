@@ -2,19 +2,15 @@ import { roundAndSplitThousands } from '@/assets/ts/textUtils';
 import { useState, useEffect } from 'react';
 
 type Props = {
-  num: number,
-  time?: number,
-  className?: string,
-}
+  num: number;
+  time?: number;
+  className?: string;
+};
 
 export const RNumber = (props: Props) => {
-  const {
-    num,
-    time = 300,
-    className,
-  } = props;
-  const [ lazyNum, setLazyNum ] = useState<number>(num);
-  const [ animatedNum, setAnimatedNum ] = useState<number | null>(null);
+  const { num, time = 300, className } = props;
+  const [lazyNum, setLazyNum] = useState<number>(num);
+  const [animatedNum, setAnimatedNum] = useState<number | null>(null);
 
   useEffect(() => {
     if (num === lazyNum) {
@@ -40,12 +36,11 @@ export const RNumber = (props: Props) => {
         clearInterval(interval);
       }
     }, Math.round(time / counts));
-
-  }, [ lazyNum, num, setLazyNum, time, setAnimatedNum ]);
+  }, [lazyNum, num, setLazyNum, time, setAnimatedNum]);
 
   return (
     <span className={className}>
-      { roundAndSplitThousands( animatedNum || lazyNum) }
+      {roundAndSplitThousands(animatedNum || lazyNum)}
     </span>
   );
 };

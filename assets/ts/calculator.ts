@@ -1,7 +1,12 @@
 import type { LoanData, TableRow, EarlyPayoff } from '@/types/Calculator';
-import { dateUTC, getPrettyDate, parseStringDate, stringToDate } from './dateUtils';
+import {
+  dateUTC,
+  getPrettyDate,
+  parseStringDate,
+  stringToDate,
+} from './dateUtils';
 
-export const calculateMonthly = (state: LoanData):number => {
+export const calculateMonthly = (state: LoanData): number => {
   if (!state || !state.amount || !state.term || !state.rate) {
     return 0;
   }
@@ -20,13 +25,23 @@ export const calculateMonthly = (state: LoanData):number => {
   return 0;
 };
 
-export const calculateTable = (calculateData: LoanData, monthly: number, payoffs: EarlyPayoff[]):TableRow[] => {
-  if (!calculateData || !monthly || !calculateData?.amount || !calculateData?.rate || !calculateData?.term) {
+export const calculateTable = (
+  calculateData: LoanData,
+  monthly: number,
+  payoffs: EarlyPayoff[],
+): TableRow[] => {
+  if (
+    !calculateData ||
+    !monthly ||
+    !calculateData?.amount ||
+    !calculateData?.rate ||
+    !calculateData?.term
+  ) {
     return [];
   }
 
   let amount = calculateData.amount;
-  const result:TableRow[] = [];
+  const result: TableRow[] = [];
   const calcuateDate = stringToDate(calculateData.date);
 
   if (!calcuateDate) {
@@ -63,11 +78,9 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
     const nextDate = dateUTC(year, month, day);
     const monthDays = (nextDate.getTime() - currentDate.getTime()) / msToDay;
 
-    const interest = amount * calculateData.rate * monthDays / yearDays / 100;
+    const interest = (amount * calculateData.rate * monthDays) / yearDays / 100;
 
-    const principal = monthly < amount
-      ? monthly - interest
-      : amount;
+    const principal = monthly < amount ? monthly - interest : amount;
     let ending = monthly < amount ? ((amount - principal) * 100) / 100 : 0;
 
     if (principal <= 0) {
@@ -84,12 +97,8 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
       interest,
       principal,
       isPayoff: false,
-      amount: amount > monthly
-        ? monthly
-        : principal + interest,
-      ending: ending > 0
-        ? ending
-        : 0,
+      amount: amount > monthly ? monthly : principal + interest,
+      ending: ending > 0 ? ending : 0,
     });
 
     if (payoff) {
@@ -112,9 +121,10 @@ export const calculateTable = (calculateData: LoanData, monthly: number, payoffs
   return result;
 };
 
-export const initialCalculateState = (state?: LoanData) => state || {
-  amount: 5000000,
-  term: 10,
-  rate: 12,
-  date: '02.02.2022',
-};
+export const initialCalculateState = (state?: LoanData) =>
+  state || {
+    amount: 5000000,
+    term: 10,
+    rate: 12,
+    date: '02.02.2022',
+  };

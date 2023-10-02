@@ -8,10 +8,10 @@ import RButton from '@/components/ui/RButton';
 import RDatePicker from '@/components/ui/RDatePicker';
 
 type Props = {
-  onChange: Function,
-  payoffs: EarlyPayoff[],
-  date: string,
-}
+  onChange: Function;
+  payoffs: EarlyPayoff[];
+  date: string;
+};
 
 const Title = styled.h4`
   font-size: 18px;
@@ -58,16 +58,17 @@ const addMonth = (toAddDate: string) => {
 };
 
 const CalculatorEarlyPayoff = (props: Props) => {
-  const {
-    onChange,
-    date,
-  } = props;
+  const { onChange, date } = props;
 
-  const [ payoffs, setPayoffs ] = useState<EarlyPayoff[]>(props.payoffs);
-  const [ id, setId ] = useState<number>(payoffs?.length ? payoffs[payoffs.length - 1].id + 1 : 1);
+  const [payoffs, setPayoffs] = useState<EarlyPayoff[]>(props.payoffs);
+  const [id, setId] = useState<number>(
+    payoffs?.length ? payoffs[payoffs.length - 1].id + 1 : 1,
+  );
 
   const onAddEarlyPayoff = (ev: React.MouseEvent<HTMLButtonElement>) => {
-    let nextPayoffDate = addMonth(payoffs?.length ? payoffs[payoffs.length - 1].date : date);
+    let nextPayoffDate = addMonth(
+      payoffs?.length ? payoffs[payoffs.length - 1].date : date,
+    );
 
     setPayoffs([
       ...payoffs,
@@ -83,8 +84,8 @@ const CalculatorEarlyPayoff = (props: Props) => {
 
   const onClickRemove = (index: number) => {
     setPayoffs([
-      ...[ ...payoffs ].splice(0, index),
-      ...[ ...payoffs ].splice(index + 1),
+      ...[...payoffs].splice(0, index),
+      ...[...payoffs].splice(index + 1),
     ]);
   };
 
@@ -96,60 +97,54 @@ const CalculatorEarlyPayoff = (props: Props) => {
     };
 
     setPayoffs([
-      ...[ ...payoffs ].splice(0, nameObj.index),
+      ...[...payoffs].splice(0, nameObj.index),
       {
         ...payoffs[nameObj.index],
         [nameObj.key]: value,
       },
-      ...[ ...payoffs ].splice(nameObj.index + 1),
+      ...[...payoffs].splice(nameObj.index + 1),
     ]);
   };
 
   useEffect(() => {
     onChange(payoffs);
-  }, [ payoffs, onChange ]);
+  }, [payoffs, onChange]);
 
   return (
     <div className="container">
       <List>
-        {
-          payoffs.map((item, i: number) => (
-            <PayoffItem
-              key={item.id}
+        {payoffs.map((item, i: number) => (
+          <PayoffItem key={item.id}>
+            <Title>Early payoff #{i + 1}</Title>
+
+            <Input
+              numbers
+              value={item.amount}
+              label="Amount"
+              placeholder="Amount"
+              name={`payoff-amount-${i}`}
+              autoComplete="off"
+              onInput={onInput}
+            />
+
+            <RDatePicker
+              value={item.date}
+              name={`payoff-date-${i}`}
+              type="month"
+              label="Date"
+              onChange={onInput}
+            />
+
+            <Button
+              onClick={(ev: MouseEvent<HTMLButtonElement>) => onClickRemove(i)}
             >
-              <Title>
-                Early payoff #{i + 1}
-              </Title>
-
-              <Input
-                numbers
-                value={item.amount}
-                label="Amount"
-                placeholder="Amount"
-                name={`payoff-amount-${i}`}
-                autoComplete="off"
-                onInput={onInput}
-              />
-
-              <RDatePicker
-                value={item.date}
-                name={`payoff-date-${i}`}
-                type="month"
-                label="Date"
-                onChange={onInput}
-              />
-
-              <Button onClick={(ev: MouseEvent<HTMLButtonElement>) => onClickRemove(i)}>
-                Remove
-              </Button>
-            </PayoffItem>
-          ))
-        }
+              Remove
+            </Button>
+          </PayoffItem>
+        ))}
       </List>
 
-      <RButton onClick={onAddEarlyPayoff}>
-        Add early payoff
-      </RButton>
+      <RButton onClick={onAddEarlyPayoff}>Add early payoff</RButton>
     </div>
   );
 };

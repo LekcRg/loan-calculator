@@ -2,11 +2,15 @@ import styled, { css } from 'styled-components';
 
 import type { DatePickerHooks } from '@/types/RDatePicker';
 
-import { Calendar, CalenadarElement, CalendarButton } from '@/styles/datePicker';
+import {
+  Calendar,
+  CalenadarElement,
+  CalendarButton,
+} from '@/styles/datePicker';
 
 type Props = {
-  datePickerHooks: DatePickerHooks,
-}
+  datePickerHooks: DatePickerHooks;
+};
 
 const Width = css`
   width: 14.28%;
@@ -27,18 +31,11 @@ const Weekday = styled.li`
 `;
 
 const RDatePickerCalendar = (props: Props) => {
-  const {
-    datePickerHooks,
-  } = props;
+  const { datePickerHooks } = props;
 
   const {
-    data: {
-      calendars,
-      weekDays,
-    },
-    propGetters: {
-      dayButton,
-    },
+    data: { calendars, weekDays },
+    propGetters: { dayButton },
   } = datePickerHooks;
 
   const { month, days } = calendars[0];
@@ -47,11 +44,7 @@ const RDatePickerCalendar = (props: Props) => {
     <>
       <Weekdays>
         {weekDays.map((day) => (
-          <Weekday
-            key={`${month}-${day}`}
-          >
-            {day}
-          </Weekday>
+          <Weekday key={`${month}-${day}`}>{day}</Weekday>
         ))}
       </Weekdays>
       <Calendar>
@@ -67,15 +60,8 @@ const RDatePickerCalendar = (props: Props) => {
           }
 
           return (
-            <Day
-              className={className}
-              key={dpDay.$date.toDateString()}
-            >
-              <CalendarButton
-                {...dayButton(dpDay)}
-              >
-                {dpDay.day}
-              </CalendarButton>
+            <Day className={className} key={dpDay.$date.toDateString()}>
+              <CalendarButton {...dayButton(dpDay)}>{dpDay.day}</CalendarButton>
             </Day>
           );
         })}

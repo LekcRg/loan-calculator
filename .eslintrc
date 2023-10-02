@@ -3,16 +3,16 @@
   "extends": [
     "eslint:recommended",
     "next/core-web-vitals",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
   ],
-  "plugins": [
-    "@typescript-eslint",
-    "prettier"
-  ],
+  "plugins": ["@typescript-eslint/eslint-plugin", "prettier"],
   "rules": {
     "prettier/prettier": "error",
     "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/ban-ts-comment": "off"
+    // "array-bracket-newline": ["error", "consistent"],
+    // "array-element-newline": ["error", "always"]
   },
   "root": true
 }

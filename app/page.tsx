@@ -11,8 +11,8 @@ const initialState: LoanData = {
 };
 
 const getCookiesState = (): {
-  calcState: LoanData,
-  calcPayoffs: EarlyPayoff[],
+  calcState: LoanData;
+  calcPayoffs: EarlyPayoff[];
 } => {
   const cookiesStore = cookies();
   const cookiesState = cookiesStore.get('calcState');
@@ -21,15 +21,21 @@ const getCookiesState = (): {
   let returnState;
   let resturnPayoffs;
 
-  if (cookiesState && cookiesState?.value
-    && cookiesState.value[0] === '{'
-    && cookiesState.value[cookiesState.value?.length - 1] === '}') {
+  if (
+    cookiesState &&
+    cookiesState?.value &&
+    cookiesState.value[0] === '{' &&
+    cookiesState.value[cookiesState.value?.length - 1] === '}'
+  ) {
     returnState = JSON.parse(cookiesState.value);
   }
 
-  if (cookiesPayoffs && cookiesPayoffs?.value
-    && cookiesPayoffs.value[0] === '['
-    && cookiesPayoffs.value[cookiesPayoffs.value?.length - 1] === ']') {
+  if (
+    cookiesPayoffs &&
+    cookiesPayoffs?.value &&
+    cookiesPayoffs.value[0] === '[' &&
+    cookiesPayoffs.value[cookiesPayoffs.value?.length - 1] === ']'
+  ) {
     resturnPayoffs = JSON.parse(cookiesPayoffs.value);
   }
 
@@ -45,10 +51,5 @@ export default function Home() {
   const state = cookiesValues.calcState;
   const payoffs = cookiesValues.calcPayoffs;
 
-  return (
-    <HomePage 
-      initialState={state}
-      initialPayoffs={payoffs}
-    />
-  );
+  return <HomePage initialState={state} initialPayoffs={payoffs} />;
 }

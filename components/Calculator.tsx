@@ -8,11 +8,11 @@ import RDatePicker from '@/components/ui/RDatePicker';
 import { RNumber } from '@/components/ui/RNumber';
 
 type Props = {
-  onChange: Function,
-  state: LoanData,
-  monthly: number | undefined | null,
-  className?: string,
-}
+  onChange: Function;
+  state: LoanData;
+  monthly: number | undefined | null;
+  className?: string;
+};
 
 const CalculatorBlock = styled.div`
   display: flex;
@@ -48,17 +48,9 @@ const Result = styled.div`
 `;
 
 export default function Calculator(props: Props) {
-  const {
-    onChange,
-    state,
-    monthly,
-    className,
-  } = props;
+  const { onChange, state, monthly, className } = props;
 
-  const onInput = (
-    value: string | number,
-    key: string,
-  ) => {
+  const onInput = (value: string | number, key: string) => {
     if (!key) {
       console.warn('onInputAmount: Empty key');
     }
@@ -71,7 +63,6 @@ export default function Calculator(props: Props) {
     if (JSON.stringify(state) !== JSON.stringify(newState)) {
       onChange({ ...newState });
     }
-
   };
 
   return (
@@ -115,21 +106,17 @@ export default function Calculator(props: Props) {
         />
       </Wrapper>
 
-      {
-        monthly ?
-          (
-            <Result>
-              Monthly payments:{' '}
-              {/* <span>{roundAndSplitThousands(Math.round(monthly * 100) / 100)}</span> */}
-              <RNumber num={monthly}/>
-            </Result>
-          )
-          : (
-            <Result>
-              <span>Fill in all the fields</span>
-            </Result>
-          )
-      }
+      {monthly ? (
+        <Result>
+          Monthly payments:{' '}
+          {/* <span>{roundAndSplitThousands(Math.round(monthly * 100) / 100)}</span> */}
+          <RNumber num={monthly} />
+        </Result>
+      ) : (
+        <Result>
+          <span>Fill in all the fields</span>
+        </Result>
+      )}
     </CalculatorBlock>
   );
 }

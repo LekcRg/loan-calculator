@@ -1,7 +1,7 @@
 type ParsedDate = {
-  year: number,
-  month: number,
-  day: number,
+  year: number;
+  month: number;
+  day: number;
 };
 
 // dateStr = 'YYYY-MM-DD'
@@ -9,17 +9,13 @@ type ParsedDate = {
 export const isCorrectParsedDate = (parsedDate: ParsedDate): boolean => {
   if (!parsedDate) return false;
 
-  const {
-    year,
-    month,
-    day,
-  } = parsedDate;
+  const { year, month, day } = parsedDate;
 
   const isCorrectYear = !isNaN(year) && String(year)?.length === 4;
   const isCorrectMonth = !isNaN(month) && month > 0 && month <= 12;
   const isCorrectDay = !isNaN(day) && month > 0 && month <= 31;
 
-  return (!isCorrectYear || !isCorrectMonth || !isCorrectDay);
+  return !isCorrectYear || !isCorrectMonth || !isCorrectDay;
 };
 
 export const parseStringDate = (dateStr: string): ParsedDate | null => {
@@ -27,7 +23,7 @@ export const parseStringDate = (dateStr: string): ParsedDate | null => {
 
   if (dateArr?.length !== 3) return null;
 
-  const parsedDate = { 
+  const parsedDate = {
     year: Number(dateArr[0]),
     month: Number(dateArr[1]) - 1,
     day: Number(dateArr[2]),
@@ -72,9 +68,11 @@ export const dateUTC = (
   hours: number = 0,
   minutes: number = 0,
   seconds: number = 0,
-  ms: number = 0, 
+  ms: number = 0,
 ): Date => {
-  return new Date(Date.UTC(year, monthIndex, date, hours, minutes, seconds, ms));
+  return new Date(
+    Date.UTC(year, monthIndex, date, hours, minutes, seconds, ms),
+  );
 };
 
 export const dateNowUTC = (): Date => {

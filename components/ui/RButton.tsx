@@ -3,10 +3,10 @@ import { MouseEventHandler, ReactNode, MouseEvent } from 'react';
 import styled from 'styled-components';
 
 type Props = {
-  children: ReactNode,
-  onClick?: Function,
-  className?: string,
-}
+  children: ReactNode;
+  onClick?: Function;
+  className?: string;
+};
 
 const Button = styled.button`
   background: #616161;
@@ -15,7 +15,7 @@ const Button = styled.button`
   cursor: pointer;
   border: none;
   outline: none;
-  transition: background .3s ease;
+  transition: background 0.3s ease;
 
   &:hover {
     background: #515151;
@@ -23,11 +23,7 @@ const Button = styled.button`
 `;
 
 const RButton = (props: Props) => {
-  const {
-    children,
-    onClick,
-    className,
-  } = props;
+  const { children, onClick, className } = props;
 
   const onClickBtn = (ev: MouseEvent) => {
     if (onClick) {
@@ -36,11 +32,8 @@ const RButton = (props: Props) => {
   };
 
   return (
-    <Button
-      onClick={onClickBtn}
-      className={className}
-    >
-      { children }
+    <Button onClick={onClickBtn} className={className}>
+      {children}
     </Button>
   );
 };

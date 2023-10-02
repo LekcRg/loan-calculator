@@ -34,7 +34,8 @@ export const roundAndSplitThousands = (num: number | string) => {
 export const inputFloat = (
   value: string | number,
   max?: number,
-  decimal: number = 2): string => {
+  decimal: number = 2,
+): string => {
   let result = numbersOnly(value);
   const maxIntLength = String(Number.MAX_SAFE_INTEGER).length;
 

@@ -12,9 +12,9 @@ import CalculatorEarlyPayoffComponent from '../CalculatorEarlyPayoff';
 import CalaculatorTable from '@/components/CalculatorTable';
 
 type Props = {
-  initialState: LoanData,
-  initialPayoffs: EarlyPayoff[],
-}
+  initialState: LoanData;
+  initialPayoffs: EarlyPayoff[];
+};
 
 const MainBlock = styled.main`
   display: flex;
@@ -32,14 +32,14 @@ const CalculatorEarlyPayoff = styled(CalculatorEarlyPayoffComponent)`
 `;
 
 export default function Home(props: Props) {
-  const {
-    initialState,
-    initialPayoffs,
-  } = props;
+  const { initialState, initialPayoffs } = props;
 
-  const [ calculatorState, setCalculatorState ] = useState<LoanData>(initialState);
-  const [ monthly, setMonthly ] = useState<number>(calculateMonthly(calculatorState));
-  const [ payoffs, setPayoffs ] = useState<EarlyPayoff[]>(initialPayoffs);
+  const [calculatorState, setCalculatorState] =
+    useState<LoanData>(initialState);
+  const [monthly, setMonthly] = useState<number>(
+    calculateMonthly(calculatorState),
+  );
+  const [payoffs, setPayoffs] = useState<EarlyPayoff[]>(initialPayoffs);
   const initialTableState = calculateTable(calculatorState, monthly, payoffs);
 
   const onChangeCalculator = (state: LoanData) => {

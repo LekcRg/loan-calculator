@@ -6,12 +6,12 @@ type ActiveCalendar = 'date' | 'month' | 'year';
 
 type Props = {
   calendars: DPCalendar[];
-  activeCalendar: ActiveCalendar,
-  title?: string,
-  prevProps: Function,
-  nextProps: Function,
-  changeActiveCalendar: Function,
-}
+  activeCalendar: ActiveCalendar;
+  title?: string;
+  prevProps: Function;
+  nextProps: Function;
+  changeActiveCalendar: Function;
+};
 
 const Header = styled.div`
   display: flex;
@@ -33,10 +33,10 @@ const HeaderBtn = styled.button`
   font-size: 16px;
   color: #fff;
   cursor: pointer;
-  transition: opacity .3s ease;
+  transition: opacity 0.3s ease;
 
   &:hover {
-    opacity: .8;
+    opacity: 0.8;
   }
 
   &:not(:last-child) {
@@ -72,42 +72,25 @@ const RDatePickerHeader = (props: Props) => {
 
   return (
     <Header>
-      <HeaderArrow 
-        className="_prev"
-        {...prevProps()}
-      />
+      <HeaderArrow className="_prev" {...prevProps()} />
 
       <HeaderTitle>
-        {
-          title ?
-            <HeaderBtn>
-              {title}
-            </HeaderBtn>
-            : null
-        }
-        {
-          activeCalendar === 'date' ?
-            <HeaderBtn
-              onClick={() => changeActiveCalendar('month')}
-            >
-              {month}
-            </HeaderBtn>
-            : null
-        }
-        {
-          activeCalendar === 'date' || activeCalendar === 'month' ?
-            <HeaderBtn
-              onClick={() => changeActiveCalendar('year')}
-            >
-              {year}
-            </HeaderBtn>
-            : ''
-        }
+        {title ? <HeaderBtn>{title}</HeaderBtn> : null}
+        {activeCalendar === 'date' ? (
+          <HeaderBtn onClick={() => changeActiveCalendar('month')}>
+            {month}
+          </HeaderBtn>
+        ) : null}
+        {activeCalendar === 'date' || activeCalendar === 'month' ? (
+          <HeaderBtn onClick={() => changeActiveCalendar('year')}>
+            {year}
+          </HeaderBtn>
+        ) : (
+          ''
+        )}
       </HeaderTitle>
 
-      <HeaderArrow
-        {...nextProps()}
-      />
+      <HeaderArrow {...nextProps()} />
     </Header>
   );
 };

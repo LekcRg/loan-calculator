@@ -4,17 +4,17 @@ import { useState, useEffect } from 'react';
 import { inputFloat } from '@/assets/ts/textUtils';
 
 type Props = {
-  placeholder?: string,
-  name?: string,
-  label?: string,
-  numbers?: boolean,
-  disabled?: boolean,
-  value: string | number,
-  autoComplete?: string,
-  className?: string,
-  onChange?: Function,
-  onInput?: Function,
-  id?: string,
+  placeholder?: string;
+  name?: string;
+  label?: string;
+  numbers?: boolean;
+  disabled?: boolean;
+  value: string | number;
+  autoComplete?: string;
+  className?: string;
+  onChange?: Function;
+  onInput?: Function;
+  id?: string;
 };
 
 const Wrapper = styled.div`
@@ -39,7 +39,7 @@ const Input = styled.input`
 
   &[disabled] {
     background: #121212;
-    color: rgba(221, 221, 221, .75);
+    color: rgba(221, 221, 221, 0.75);
   }
 `;
 
@@ -58,10 +58,7 @@ const RInput = (props: Props) => {
     disabled,
   } = props;
 
-  const [
-    lazyValue,
-    setLazyValue,
-  ] = useState<string | number>('');
+  const [lazyValue, setLazyValue] = useState<string | number>('');
 
   const getReturnValue = (value: string | number) => {
     if (numbers && lazyValue !== undefined) {
@@ -97,22 +94,14 @@ const RInput = (props: Props) => {
 
   useEffect(() => {
     if (value !== undefined) {
-      setLazyValue(numbers ? inputFloat(value) : value); 
+      setLazyValue(numbers ? inputFloat(value) : value);
     }
-  }, [ value, setLazyValue, numbers ]);
+  }, [value, setLazyValue, numbers]);
 
   return (
-    <Wrapper
-      className={className}
-    >
-      {
-        label ? 
-          <Label htmlFor={id || `input-${name}`}>
-            {label}
-          </Label>
-          : null
-      }
-      <Input 
+    <Wrapper className={className}>
+      {label ? <Label htmlFor={id || `input-${name}`}>{label}</Label> : null}
+      <Input
         type="text"
         id={id || `input-${name}`}
         placeholder={placeholder}
