@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 import type { DatePickerHooks } from '@/types/RDatePicker';
 
-import { Calendar, CalenadarElement, CalendarButton } from '@/styles/datePicker';
+import { Calendar, CalendarElement, CalendarButton } from '@/styles/datePicker';
 
 type Props = {
   datePickerHooks: DatePickerHooks,
@@ -16,7 +16,7 @@ const Width = css`
   width: 14.28%;
 `;
 
-const Day = styled(CalenadarElement)`
+const Day = styled(CalendarElement)`
   ${Width}
 `;
 

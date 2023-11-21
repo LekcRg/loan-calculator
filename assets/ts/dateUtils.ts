@@ -16,8 +16,8 @@ export const isCorrectParsedDate = (parsedDate: ParsedDate): boolean => {
   } = parsedDate;
 
   const isCorrectYear = !isNaN(year) && String(year)?.length === 4;
-  const isCorrectMonth = !isNaN(month) && month > 0 && month <= 12;
-  const isCorrectDay = !isNaN(day) && month > 0 && month <= 31;
+  const isCorrectMonth = !isNaN(month) && month >= 0 && month <= 12;
+  const isCorrectDay = !isNaN(day) && day > 0 && day <= 31;
 
   return (!isCorrectYear || !isCorrectMonth || !isCorrectDay);
 };

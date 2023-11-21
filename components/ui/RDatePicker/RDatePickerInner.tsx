@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import type { ReactNode } from 'react';
 
-import { Calendar, CalenadarElement, CalendarButton } from '@/styles/datePicker';
+import { Calendar, CalendarElement, CalendarButton } from '@/styles/datePicker';
 
 import type { DatePickerHooks, ActiveCalendar } from '@/types/RDatePicker';
 
@@ -12,7 +12,7 @@ type Props = {
   changeActiveCalendar: Function,
 };
 
-const Element = styled(CalenadarElement)`
+const Element = styled(CalendarElement)`
   width: 33.33%;
 `;
 
@@ -45,7 +45,7 @@ const RDatePickerInner = (props: Props) => {
     <Wrapper>
       {activeCalendar === 'year' ?
         years.map((dbYear) => (
-          <CalendarElement
+          <CalendarElementBlock
             selected={dbYear.selected}
             key={dbYear.$date.toDateString()}
             buttonProps={yearButton(dbYear, {
@@ -53,10 +53,10 @@ const RDatePickerInner = (props: Props) => {
             })}
           >
             { dbYear.year }
-          </CalendarElement>
+          </CalendarElementBlock>
         )) : (
           months.map((dbMonth) => (
-            <CalendarElement
+            <CalendarElementBlock
               selected={dbMonth.selected}
               key={dbMonth.$date.toDateString()}
               buttonProps={monthButton(dbMonth, {
@@ -64,14 +64,14 @@ const RDatePickerInner = (props: Props) => {
               })}
             >
               { dbMonth.month }
-            </CalendarElement>
+            </CalendarElementBlock>
           ))
         )}
     </Wrapper>
   );
 };
 
-const CalendarElement = (props: {
+const CalendarElementBlock = (props: {
   children: ReactNode,
   selected: boolean,
   buttonProps: Object,

@@ -21,7 +21,7 @@ export const CalendarButton = styled.button`
   }
 `;
 
-export const CalenadarElement = styled.li<{
+export const CalendarElement = styled.li<{
   $selected?: boolean,
   $notCurrent?: boolean
 }>`

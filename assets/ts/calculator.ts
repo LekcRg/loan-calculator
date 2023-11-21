@@ -31,29 +31,23 @@ export const calculateTable = (
 
   let amount = calculateData.amount;
   const result: TableRow[] = [];
-  const calcuateDate = stringToDate(calculateData.date);
+  const calculateDate = stringToDate(calculateData.date);
 
-  if (!calcuateDate) {
+  if (!calculateDate) {
     return { months: result };
   }
 
-  let currentDate = calcuateDate;
-  let year = calcuateDate.getUTCFullYear();
-  let month = calcuateDate.getUTCMonth();
-  const day = calcuateDate.getUTCDate();
+  let year = calculateDate.getUTCFullYear();
+  let month = calculateDate.getUTCMonth();
+  const day = calculateDate.getUTCDate();
   let index = 0;
-
-  const msToDay = 1000 * 60 * 60 * 24;
 
   let newMonthly = monthly;
   let termMonth = calculateData.term * 12;
   let totalPayments = 0;
+  const everyMonthPayoffs: EarlyPayoff[] = [];
 
   while (amount > 0) {
-    const currentYear = dateUTC(year, 0, 1);
-    const nextYear = dateUTC(year + 1, 0, 1);
-    const yearDays = (nextYear.getTime() - currentYear.getTime()) / msToDay;
-
     if (month < 11) {
       month++;
     } else {
@@ -61,12 +55,12 @@ export const calculateTable = (
       month = 0;
     }
 
-    const payoff = payoffs.find(({ date }) => {
+    const payoffList = payoffs.filter(({ date }) => {
       const parsedDate = parseStringDate(date);
 
       return parsedDate?.month === month && parsedDate?.year === year;
     });
-    const payoffAmount = payoff ? payoff.amount : 0;
+    payoffList.push(...everyMonthPayoffs);
 
     const nextDate = dateUTC(year, month, day);
 
@@ -102,33 +96,43 @@ export const calculateTable = (
 
     totalPayments += monthlyPayment;
 
-    if (payoff) {
-      ending = ending - payoffAmount;
+    if (payoffList?.length || everyMonthPayoffs?.length) {
+      payoffList.forEach(payoff => {
+        const payoffAmount = payoff ? payoff.amount : 0;
 
-      result.push({
-        ...baseItem,
-        interest: 0,
-        principal: payoffAmount,
-        isPayoff: true,
-        amount: payoffAmount,
-        ending: ending,
+        ending = ending - payoffAmount;
+
+        result.push({
+          ...baseItem,
+          interest: 0,
+          principal: payoffAmount,
+          isPayoff: true,
+          amount: payoffAmount,
+          ending: ending,
+        });
+
+        totalPayments += payoffAmount;
+
+        if (payoff.type === 'payment') {
+          termMonth -= index;
+
+          newMonthly = calculateMonthly({
+            ...calculateData,
+            term: termMonth,
+            amount: ending,
+          }, true);
+        }
+
+        if (!payoff.addedEvery && payoff.frequency === 'month') {
+          everyMonthPayoffs.push({
+            ...payoff,
+            addedEvery: true,
+          });
+        }
       });
-
-      totalPayments += payoffAmount;
-
-      if (payoff.type === 'payment') {
-        termMonth -= index;
-
-        newMonthly = calculateMonthly({
-          ...calculateData,
-          term: termMonth,
-          amount: ending,
-        }, true);
-      }
     }
 
     amount = ending;
-    currentDate = nextDate;
   }
 
   const value: CalculateTableData = {

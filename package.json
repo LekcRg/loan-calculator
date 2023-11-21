@@ -16,7 +16,7 @@
     "styled-components": "^5"
   },
   "dependencies": {
-    "@rehookify/datepicker": "^6.2.0",
+    "@rehookify/datepicker": "^6.2.1",
     "@types/node": "18.15.13",
     "@types/react": "18.0.37",
     "@types/react-dom": "18.0.11",

@@ -3,20 +3,22 @@ import { ReactNode, MouseEvent } from 'react';
 import styled, { css } from 'styled-components';
 
 type Props = {
-  children: ReactNode;
+  children?: ReactNode;
   className?: string;
   icon?: string,
   type?: 'default' | 'accent' | 'accent-color' | 'red' | 'icon';
   onClick?: (ev: MouseEvent<HTMLButtonElement>) => void;
 }
 
-const Button = styled.button<{$type?: Props['type']}>`
+const Button = styled.button<{$type?: Props['type']; $withoutPadding: boolean}>`
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
   border-radius: 8px;
-  padding: 12px 24px;
+  padding: ${props => props.$withoutPadding ? 0 : `12px 24px`};
+  height: ${props => props.$withoutPadding ? '48px' : `auto`};
+  width: ${props => props.$withoutPadding ? '48px' : `auto`};
   cursor: pointer;
   border: none;
   outline: none;
@@ -80,13 +82,16 @@ const RButton = (props: Props) => {
   return (
     <Button
       $type={type}
+      $withoutPadding={!children}
       onClick={onClickBtn}
       className={className}
     >
       { children }
 
       { icon && (
-        <Icon>
+        <Icon
+          $big={!children}
+        >
           <use xlinkHref={`#${icon}`} viewBox="0 0 16 16"></use>
         </Icon>
       )}

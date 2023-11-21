@@ -3,12 +3,8 @@ import styled from 'styled-components';
 
 import type { EarlyPayoff } from '@/types/Calculator';
 
-// import type  from '@/components/ui/RButton';
-
-import RInput from '@/components/ui/RInput';
 import RButton from '@/components/ui/RButton';
-import RDatePicker from '@/components/ui/RDatePicker';
-import RSelect from '@/components/ui/RSelect';
+import EarlyPayoffItem from './EarlyPayoff';
 
 type Props = {
   date: string,
@@ -17,38 +13,8 @@ type Props = {
   onChange: Function,
 }
 
-const Title = styled.h4`
-  font-size: 18px;
-  font-weight: normal;
-  text-align: center;
-  margin-bottom: 8px;
-`;
-
 const List = styled.ul`
   margin-bottom: 15px;
-`;
-
-const Input = styled(RInput)`
-  margin-bottom: 12px;
-`;
-
-const DatePicker = styled(RDatePicker)`
-  margin-bottom: 12px;
-`;
-
-const PayoffItem = styled.li`
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  padding: 16px;
-  list-style-type: none;
-
-  &:not(:last-child) {
-    margin-bottom: 12px;
-  }
-`;
-
-const Button = styled(RButton)`
-  margin-top: 18px;
 `;
 
 const addMonth = (toAddDate: string) => {
@@ -65,7 +31,7 @@ const addMonth = (toAddDate: string) => {
   return newDate.join('-');
 };
 
-const CalculatorEarlyPayoff = (props: Props) => {
+const EarlyPayoffList = (props: Props) => {
   const {
     date,
     className = '',
@@ -85,6 +51,7 @@ const CalculatorEarlyPayoff = (props: Props) => {
         date: nextPayoffDate,
         id,
         type: 'term',
+        frequency: 'one-time',
       },
     ]);
 
@@ -124,55 +91,13 @@ const CalculatorEarlyPayoff = (props: Props) => {
       <List>
         {
           payoffs.map((item, i: number) => (
-            <PayoffItem
+            <EarlyPayoffItem
               key={item.id}
-            >
-              <Title>
-                Early payoff #{i + 1}
-              </Title>
-
-              <Input
-                numbers
-                value={item.amount}
-                label="Amount"
-                placeholder="Amount"
-                name={`payoff-amount-${i}`}
-                autoComplete="off"
-                onChange={onChangeValues}
-              />
-
-              <DatePicker
-                value={item.date}
-                name={`payoff-date-${i}`}
-                type="month"
-                label="Date"
-                onChange={onChangeValues}
-              />
-
-              <RSelect
-                options={[
-                  {
-                    label: 'Reduce loan term',
-                    value: 'term',
-                  },
-                  {
-                    label: 'Lower monthly payments',
-                    value: 'payment',
-                  },
-                ]}
-                label="Type early payoff"
-                name={`payoff-type-${i}`}
-                value={item.type}
-                onChange={onChangeValues}
-              />
-
-              <Button
-                onClick={() => onClickRemove(i)}
-                type="red"
-              >
-                Remove
-              </Button>
-            </PayoffItem>
+              item={item}
+              index={i}
+              onChangeValues={onChangeValues}
+              onClickRemove={onClickRemove}
+            />
           ))
         }
       </List>
@@ -188,4 +113,4 @@ const CalculatorEarlyPayoff = (props: Props) => {
   );
 };
 
-export default CalculatorEarlyPayoff;
+export default EarlyPayoffList;
