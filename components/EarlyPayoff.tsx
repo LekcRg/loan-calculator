@@ -1,7 +1,7 @@
 import type { EarlyPayoff } from '@/types/Calculator';
 
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import RInput from '@/components/ui/RInput';
 import RDatePicker from '@/components/ui/RDatePicker';
@@ -11,6 +11,7 @@ import RSelect from '@/components/ui/RSelect';
 type Props = {
   item: EarlyPayoff;
   index: number;
+  paymentDay: number;
   onChangeValues: (value: Number | string, name: String) => void;
   onClickRemove: (index: number) => void;
 }
@@ -43,8 +44,13 @@ const Form = styled.div`
   margin-right: 32px;
 `;
 
-const FormItem = styled.div`
+const FormItem = styled.div<{$flex?: boolean}>`
   width: calc(50% - 8px);
+
+  ${({ $flex }) => $flex && css`
+      display: flex;
+      gap: 8px;
+  `}
 `;
 
 const Input = styled(RInput)`
@@ -52,7 +58,7 @@ const Input = styled(RInput)`
 `;
 
 const DatePicker = styled(RDatePicker)`
-  /* margin-bottom: 12px; */
+  flex: 1;
 `;
 
 const Button = styled(RButton)`
@@ -64,10 +70,13 @@ const EarlyPayoff = (props: Props) => {
   const {
     item,
     index,
+    paymentDay,
     onChangeValues,
     onClickRemove,
   } = props;
-  
+
+  const replaceDay = Number(item.date.split('-')[2]);
+
   return (
     <Payoff
       key={item.id}
@@ -75,14 +84,28 @@ const EarlyPayoff = (props: Props) => {
       <Index>{ index + 1 }</Index>
 
       <Form>
-        <FormItem>
+        <FormItem $flex>
           <DatePicker
             value={item.date}
+            paymentDay={paymentDay}
             name={`payoff-date-${index}`}
             type="month"
-            label="Date"
+            label={item.frequency === 'month' ? 'Payment start date' : 'Date'}
             onChange={onChangeValues}
           />
+          {
+            item.frequency === 'month' && 
+              <DatePicker
+                value={item.dateEnd}
+                paymentDay={paymentDay}
+                name={`payoff-dateEnd-${index}`}
+                type="month"
+                label="Payment end date"
+                clearable
+                placeholder="Till loan ends"
+                onChange={onChangeValues}
+              />
+          }
         </FormItem>
 
         <FormItem>

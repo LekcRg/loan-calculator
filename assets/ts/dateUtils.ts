@@ -58,11 +58,21 @@ export const stringToDate = (dateStr: string): Date | null => {
 };
 
 export const dateToString = (date: Date): string => {
+  if (!date) {
+    console.log('dateToString: date is not correct');
+    return date;
+  }
   const day = date.getDate();
   const month = date.getMonth() + 1;
   const year = date.getFullYear();
 
   return `${year}-${month}-${day}`;
+};
+
+export const getCorrectDayInMonth = (year: number, month: number, day: number): number => {
+  const countDaysInMonth = new Date(year, month + 1, 0).getDate();
+
+  return day > countDaysInMonth ? countDaysInMonth : day;
 };
 
 export const dateUTC = (

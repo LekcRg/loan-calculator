@@ -69,6 +69,7 @@ const RDatePickerCalendar = (props: Props) => {
           >
             <CalendarButton
               {...dayButton(dpDay)}
+              tabIndex={-1}
             >
               {dpDay.day}
             </CalendarButton>

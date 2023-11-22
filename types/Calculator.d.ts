@@ -25,8 +25,9 @@ export type TableRow = {
 export type EarlyPayoff = {
   amount: number;
   date: string;
+  dateEnd?: string;
   type: 'payment' | 'term';
   frequency: 'one-time' | 'month';
-  addedEvery?: Boolean,
+  addedEvery?: Boolean;
   id: number;
 }

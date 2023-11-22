@@ -88,6 +88,7 @@ const CalendarElementBlock = (props: {
     >
       <CalendarButton
         {...buttonProps}
+        tabIndex={-1}
       >
         {children}
       </CalendarButton>

@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
+import { useState, useEffect, useRef, MouseEvent } from 'react';
+import styled, { css } from 'styled-components';
 import { CSSTransition } from 'react-transition-group';
 
 import { useDatePicker } from '@rehookify/datepicker';
@@ -10,16 +10,19 @@ import RLabel from './RLabel';
 import RDatePickerHeader from '@/components/ui/RDatePicker/RDatePickerHeader';
 import RDatePickerCalendar from '@/components/ui/RDatePicker/RDatePickerCalendar';
 import RDatePickerInner from '@/components/ui/RDatePicker/RDatePickerInner';
-import { dateNowUTC, dateToString, getPrettyDate, stringToDate } from '@/assets/ts/dateUtils';
+import { dateNowUTC, dateToString, getCorrectDayInMonth, getPrettyDate, stringToDate } from '@/assets/ts/dateUtils';
 
 type Props = {
   name: string,
   label?: string,
   value?: string,
+  placeholder?: string,
   onChange?: Function,
   type?: ActiveCalendar,
   className?: string,
   blue?: boolean,
+  clearable?: boolean;
+  paymentDay?: number,
 }
 
 const Wrapper = styled.div`
@@ -40,18 +43,50 @@ const Overlay = styled.div`
 `;
 
 const Button = styled.button<{ $blue?: boolean }>`
+  position: relative;
   text-align: left;
   width: 100%;
-  background: ${(props) => props.$blue
-    ? props.theme.colors.accent4
-    : props.theme.colors.dark3};
+  background: ${({ $blue, theme }) => $blue
+    ? theme.colors.accent4
+    : theme.colors.dark3};
   font-size: 18px;
   color: ${({ theme }) => theme.colors.light1};
-  padding: 12px;
+  padding: 11px;
   border-radius: 4px;
   outline: none;
-  border: none;
+  border: 1px ${({ $blue, theme }) => $blue 
+    ? theme.colors.accent4
+    : theme.colors.dark3} solid;
   cursor: pointer;
+
+  ${({ $blue }) => !$blue && css`
+    transition: border-color .3s ease;
+
+    &:hover {
+      border: 1px ${({ theme }) => theme.colors.dark4} solid;
+    }
+
+    &:focus {
+      border: 1px ${({ theme }) => theme.colors.accent} solid;
+    }
+  `}
+`;
+
+const Clear = styled.svg`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 11px;
+  width: 16px;
+  height: 16px;
+  margin: auto 0;
+  color: ${({ theme }) => theme.colors.light3};
+  transform: rotate(45deg);
+  transition: color .3s ease;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.light1};
+  }
 `;
 
 const DatePicker = styled.div`
@@ -71,15 +106,20 @@ const RDatePicker = (props: Props) => {
     name,
     onChange,
     className,
+    placeholder = 'Date is not select',
+    clearable = false,
     type = 'date',
     blue = false,
+    paymentDay,
   } = props;
 
-  let date = stringToDate(value || '') || dateNowUTC();
+  let date = clearable 
+    ? stringToDate(value || '')
+    : stringToDate(value || '') || dateNowUTC();
 
   const [ activeCalendar, changeActiveCalendar ] = useState<ActiveCalendar>(type);
-  const [ selectedDates, onDatesChange ] = useState<Date[]>([ date ]);
-  const [ offsetDate, onOffsetChange ] = useState<Date>(date);
+  const [ selectedDates, onDatesChange ] = useState<Date[]>(date ? [ date ] : []);
+  const [ offsetDate, onOffsetChange ] = useState<Date>();
   const [ isShow, changeIsShow ] = useState<boolean>(false);
   const datePickerEl = useRef<HTMLDivElement | null>(null);
 
@@ -131,7 +171,8 @@ const RDatePicker = (props: Props) => {
     }
   };
 
-  const clickOverlay = () => {
+  const clickOverlay = (ev: MouseEvent<HTMLOrSVGElement>) => {
+    ev.stopPropagation();
     changeIsShow(false);
   };
 
@@ -141,13 +182,20 @@ const RDatePicker = (props: Props) => {
     } else {
       const year = newDate.getUTCFullYear();
       const month = newDate.getUTCMonth() + 1;
-      const day = date.getUTCDate();
+      let day = date ? date.getUTCDate() : (paymentDay || newDate.getUTCDate());
+      day = getCorrectDayInMonth(year, month, day);
 
       onDatesChange([ new Date(Date.UTC(year, month, day)) ]);
     }
   };
 
-  const prettyDate = getPrettyDate(date);
+  const clearDate = () => {
+    if (clearable) {
+      onDatesChange([]);
+    }
+  };
+
+  const prettyDate = date ? getPrettyDate(date) : placeholder;
 
   useEffect(() => {
     if (onChange) {
@@ -180,9 +228,17 @@ const RDatePicker = (props: Props) => {
 
       <Button
         onClick={() => changeIsShow(!isShow)}
+        // onFocus={() => changeIsShow(true)}
+        // onBlur={() => changeIsShow(false)}
         $blue={blue}
       >
         { prettyDate }
+
+        {clearable && (
+          <Clear onClick={clearDate}>
+            <use xlinkHref="#plus"></use>
+          </Clear>
+        )}
       </Button>
 
       <CSSTransition

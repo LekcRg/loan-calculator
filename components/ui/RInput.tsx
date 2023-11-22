@@ -30,9 +30,18 @@ const Input = styled(RBaseInput)<{ $blue?: boolean }>`
     ? props.theme.colors.accent4
     : props.theme.colors.dark3};
   outline: none;
-  border: none;
-  padding: 12px;
+  padding: 11px;
   border-radius: 4px;
+  border: 1px ${({ theme }) => theme.colors.dark3} solid;
+  transition: border-color .3s ease;
+
+  &:hover {
+    border: 1px ${({ theme }) => theme.colors.dark4} solid;
+  }
+
+  &:focus {
+    border: 1px ${({ theme }) => theme.colors.accent} solid;
+  }
 
   &[disabled] {
     background: #121212;

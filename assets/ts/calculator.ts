@@ -98,7 +98,7 @@ export const calculateTable = (
 
     if (payoffList?.length || everyMonthPayoffs?.length) {
       payoffList.forEach(payoff => {
-        const payoffAmount = payoff ? payoff.amount : 0;
+        const payoffAmount = payoff?.amount ? payoff.amount : 0;
 
         ending = ending - payoffAmount;
 

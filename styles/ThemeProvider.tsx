@@ -8,7 +8,7 @@ const darkTheme: DefaultTheme = {
     accent: '#76B8B0',
     accent2: '#BFEEE8',
     accent3: '#4B9A91',
-    accent4: 'rgba(118, 184, 176, .25)', // rgba(${accent}, .25)
+    accent4: '#5FA59D', // rgba(${accent}, .25)
     accent5: '#0E1515',
     accent6: '#1B322F',
     dark1: '#0D0E0F',

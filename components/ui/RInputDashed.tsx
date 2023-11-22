@@ -50,6 +50,7 @@ const Dashed = styled.div`
   line-height: 1;
   border-bottom: 1px dashed rgba(249, 249, 249, 0.20);
   color: rgba(255,255,255, 0);
+  user-select: none;
 `;
 
 const RInputDashed = (props: Props) => {

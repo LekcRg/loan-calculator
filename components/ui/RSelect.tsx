@@ -23,14 +23,23 @@ const Select = styled.select`
   display: block;
   margin-top: 12px;
   width: 100%;
-  border: none;
   outline: none;
   background: ${({ theme }) => theme.colors.dark3};
   font-size: 18px;
   color: ${({ theme }) => theme.colors.light1};
-  padding: 12px;
+  padding: 11px;
   border-radius: 4px;
   cursor: pointer;
+  border: 1px ${({ theme }) => theme.colors.dark3} solid;
+  transition: border-color .3s ease;
+
+  &:hover {
+    border: 1px ${({ theme }) => theme.colors.dark4} solid;
+  }
+
+  &:focus {
+    border: 1px ${({ theme }) => theme.colors.accent} solid;
+  }
 `;
 
 const RSelect = (props: Props) => {

@@ -80,6 +80,7 @@ const RDatePickerHeader = (props: Props) => {
         {...prevProps()}
         className="_prev"
         viewBox="0 0 18 18"
+        tabIndex={-1}
       >
         <use xlinkHref="#arr-right"></use>
       </HeaderArrow>
@@ -87,7 +88,7 @@ const RDatePickerHeader = (props: Props) => {
       <HeaderTitle>
         {
           title ?
-            <HeaderBtn>
+            <HeaderBtn tabIndex={-1}>
               {title}
             </HeaderBtn>
             : null
@@ -95,6 +96,7 @@ const RDatePickerHeader = (props: Props) => {
         {
           activeCalendar === 'date' ?
             <HeaderBtn
+              tabIndex={-1}
               onClick={() => changeActiveCalendar('month')}
             >
               {month}
@@ -104,6 +106,7 @@ const RDatePickerHeader = (props: Props) => {
         {
           activeCalendar === 'date' || activeCalendar === 'month' ?
             <HeaderBtn
+              tabIndex={-1}
               onClick={() => changeActiveCalendar('year')}
             >
               {year}
@@ -119,6 +122,7 @@ const RDatePickerHeader = (props: Props) => {
       <HeaderArrow 
         {...nextProps()}
         viewBox="0 0 18 18"
+        tabIndex={-1}
       >
         <use xlinkHref="#arr-right"></use>
       </HeaderArrow>
