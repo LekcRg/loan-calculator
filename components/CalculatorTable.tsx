@@ -207,7 +207,7 @@ const CalculatorTable = (props: Props) => {
                     <CellValue>
                       {
                         !item.isPayoff && (item?.index !== undefined)
-                          ? item.index + 1 
+                          ? item.index + 1
                           : ''
                       }
                     </CellValue>

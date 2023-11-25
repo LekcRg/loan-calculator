@@ -28,7 +28,15 @@ export const roundAndSplitThousands = (num: number | string) => {
     return num;
   }
 
-  return splitThousands(roundNumber(num));
+  const splitted = splitThousands(roundNumber(num)).split('.');
+
+  if (!splitted[1]) {
+    splitted[1] = '00';
+  } else {
+    splitted[1] = splitted[1]?.length === 1 ? `${splitted[1]}0` : splitted[1];
+  }
+
+  return splitted.join('.');
 };
 
 export const inputFloat = (

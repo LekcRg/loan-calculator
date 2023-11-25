@@ -1,5 +1,5 @@
 import type { LoanData, TableRow, CalculateTableData, EarlyPayoff } from '@/types/Calculator';
-import { dateUTC, getPrettyDate, parseStringDate, stringToDate } from './dateUtils';
+import { dateUTC, getPrettyDate, parseStringDate, stringToDate, getCorrectDayInMonth } from './dateUtils';
 
 export const calculateMonthly = (state: LoanData, isMonth = false): number => {
   if (!state || !state.amount || !state.term || !state.rate) {
@@ -62,7 +62,7 @@ export const calculateTable = (
     });
     payoffList.push(...everyMonthPayoffs);
 
-    const nextDate = dateUTC(year, month, day);
+    const nextDate = dateUTC(year, month, getCorrectDayInMonth(year, month, day));
 
     const interest = amount * calculateData.rate / 12 / 100;
 
