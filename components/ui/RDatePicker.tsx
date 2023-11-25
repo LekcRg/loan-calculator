@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, MouseEvent } from 'react';
+import { useState, useEffect, useRef, MouseEvent, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import { CSSTransition } from 'react-transition-group';
 
@@ -6,11 +6,19 @@ import { useDatePicker } from '@rehookify/datepicker';
 
 import type { ActiveCalendar } from '@/types/RDatePicker';
 
+
 import RLabel from './RLabel';
 import RDatePickerHeader from '@/components/ui/RDatePicker/RDatePickerHeader';
 import RDatePickerCalendar from '@/components/ui/RDatePicker/RDatePickerCalendar';
 import RDatePickerInner from '@/components/ui/RDatePicker/RDatePickerInner';
-import { dateNowUTC, dateToString, getCorrectDayInMonth, getPrettyDate, stringToDate } from '@/assets/ts/dateUtils';
+import {
+  dateNowUTC,
+  dateToString,
+  dateUTC,
+  getCorrectDayInMonth,
+  getPrettyDate,
+  stringToDate,
+} from '@/assets/ts/dateUtils';
 
 type Props = {
   name: string,
@@ -23,6 +31,8 @@ type Props = {
   blue?: boolean,
   clearable?: boolean;
   paymentDay?: number,
+  minDate?: string,
+  minDateErrorText?: string,
 }
 
 const Wrapper = styled.div`
@@ -42,7 +52,7 @@ const Overlay = styled.div`
   }
 `;
 
-const Button = styled.button<{ $blue?: boolean }>`
+const Button = styled.button<{ $blue?: boolean, $error?: boolean }>`
   position: relative;
   text-align: left;
   width: 100%;
@@ -54,22 +64,34 @@ const Button = styled.button<{ $blue?: boolean }>`
   padding: 11px;
   border-radius: 4px;
   outline: none;
-  border: 1px ${({ $blue, theme }) => $blue 
+  border: 1px ${({ $blue, theme }) => $blue
     ? theme.colors.accent4
     : theme.colors.dark3} solid;
   cursor: pointer;
+  transition: border-color .3s ease;
 
-  ${({ $blue }) => !$blue && css`
-    transition: border-color .3s ease;
+  ${({ $blue, $error }) => !$blue && !$error && css`
 
     &:hover {
-      border: 1px ${({ theme }) => theme.colors.dark4} solid;
+      border-color: ${({ theme }) => theme.colors.dark4};
     }
 
     &:focus {
-      border: 1px ${({ theme }) => theme.colors.accent} solid;
+      border-color: ${({ theme }) => theme.colors.accent};
     }
   `}
+
+  ${({ $error }) => $error && css`
+    border-color: ${({ theme }) => theme.colors.red1};
+  `}
+`;
+
+const ErrorText = styled.div`
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  color: ${({ theme }) => theme.colors.red1};
+  font-size: 12px;
 `;
 
 const Clear = styled.svg`
@@ -111,17 +133,25 @@ const RDatePicker = (props: Props) => {
     type = 'date',
     blue = false,
     paymentDay,
+    minDate,
+    minDateErrorText,
   } = props;
 
-  let date = clearable 
-    ? stringToDate(value || '')
-    : stringToDate(value || '') || dateNowUTC();
+  let date = useMemo(() => {
+    if (clearable) {
+      return value ? stringToDate(value) : null;
+    }
+
+    return value ? stringToDate(value) : dateNowUTC();
+  }, [ clearable, value ]);
 
   const [ activeCalendar, changeActiveCalendar ] = useState<ActiveCalendar>(type);
   const [ selectedDates, onDatesChange ] = useState<Date[]>(date ? [ date ] : []);
   const [ offsetDate, onOffsetChange ] = useState<Date>();
   const [ isShow, changeIsShow ] = useState<boolean>(false);
+  const [ error, changeError ] = useState<string | null>(null);
   const datePickerEl = useRef<HTMLDivElement | null>(null);
+  const errorEl = useRef<HTMLDivElement | null>(null);
 
   const datePickerHooks = useDatePicker({
     selectedDates,
@@ -147,9 +177,10 @@ const RDatePicker = (props: Props) => {
     },
   } = datePickerHooks;
 
-  const title = activeCalendar === 'year' 
-    ? `${years[0].year} - ${years[years.length - 1].year}`
-    : undefined;
+  const title = useMemo(() => activeCalendar === 'year' ?
+    `${years[0].year} - ${years[years.length - 1].year}` :
+    undefined,
+  [ activeCalendar, years ]);
 
   const headerNextProps = () => {
     if (activeCalendar === 'date') {
@@ -199,7 +230,7 @@ const RDatePicker = (props: Props) => {
 
   useEffect(() => {
     if (onChange) {
-      const newValue = dateToString(selectedDates[0]);
+      const newValue = selectedDates[0] ? dateToString(selectedDates[0]) : null;
 
       if (value === newValue) {
         return;
@@ -208,6 +239,37 @@ const RDatePicker = (props: Props) => {
       onChange(newValue, name);
     }
   }, [ selectedDates, onChange, name, value ]);
+
+  const parsedMinDate = useMemo(() => minDate && stringToDate(minDate), [ minDate ]);
+
+  useEffect(() => {
+    if (selectedDates[0] && parsedMinDate && parsedMinDate > selectedDates[0]) {
+      changeError(minDateErrorText ? minDateErrorText : `Value must exceed ${minDate}`);
+    } else if (error) {
+      changeError(null);
+    }
+  }, [ selectedDates, parsedMinDate, minDateErrorText, minDate, error, changeError ]);
+
+  useEffect(() => {
+    if (!selectedDates[0] || !paymentDay) {
+      return;
+    }
+
+    const year = selectedDates[0].getUTCFullYear();
+    const month = selectedDates[0].getUTCMonth();
+    const currentDay = selectedDates[0].getUTCDate();
+    const newDay = getCorrectDayInMonth(year, month, paymentDay);
+
+    if (currentDay === newDay) {
+      return;
+    }
+
+    const newDate = dateUTC(year, month, newDay);
+
+    if (selectedDates[0].getTime() !== newDate.getTime()) {
+      onDatesChange([ newDate ]);
+    }
+  }, [ selectedDates, paymentDay, onDatesChange ]);
 
   return (
     <Wrapper className={className}>
@@ -227,14 +289,15 @@ const RDatePicker = (props: Props) => {
       }
 
       <Button
+        $blue={blue}
+        $error={Boolean(error)}
         onClick={() => changeIsShow(!isShow)}
         // onFocus={() => changeIsShow(true)}
         // onBlur={() => changeIsShow(false)}
-        $blue={blue}
       >
         { prettyDate }
 
-        {clearable && (
+        {clearable && date && (
           <Clear onClick={clearDate}>
             <use xlinkHref="#plus"></use>
           </Clear>
@@ -278,6 +341,18 @@ const RDatePicker = (props: Props) => {
               : ''
           }
         </DatePicker>
+      </CSSTransition>
+
+      <CSSTransition
+        in={Boolean(error)}
+        nodeRef={errorEl}
+        timeout={200}
+        classNames="fade"
+        unmountOnExit
+      >
+        <ErrorText ref={errorEl}>
+          { error }
+        </ErrorText>
       </CSSTransition>
     </Wrapper>
   );

@@ -1,4 +1,4 @@
-import { useState, useEffect, MouseEvent } from 'react';
+import { useState, useEffect, MouseEvent, useMemo } from 'react';
 import styled from 'styled-components';
 
 import type { EarlyPayoff } from '@/types/Calculator';
@@ -45,7 +45,7 @@ const EarlyPayoffList = (props: Props) => {
 
   const [ payoffs, setPayoffs ] = useState<EarlyPayoff[]>(props.payoffs);
   const [ id, setId ] = useState<number>(payoffs?.length ? payoffs[payoffs.length - 1].id + 1 : 1);
-  const paymentDay = Number(date.split('-')[2]);
+  const paymentDay = useMemo(() => Number(date.split('-')[2]), [ date ]);
 
   const onAddEarlyPayoff = (ev: MouseEvent<HTMLButtonElement>) => {
     let nextPayoffDate = addMonth(
@@ -113,7 +113,7 @@ const EarlyPayoffList = (props: Props) => {
               key={item.id}
               item={item}
               index={i}
-              paymentDay={paymentDay}
+              loanDate={date}
               onChangeValues={onChangeValues}
               onClickRemove={onClickRemove}
             />

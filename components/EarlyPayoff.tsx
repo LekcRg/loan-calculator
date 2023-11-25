@@ -1,6 +1,6 @@
 import type { EarlyPayoff } from '@/types/Calculator';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled, { css } from 'styled-components';
 
 import RInput from '@/components/ui/RInput';
@@ -11,7 +11,7 @@ import RSelect from '@/components/ui/RSelect';
 type Props = {
   item: EarlyPayoff;
   index: number;
-  paymentDay: number;
+  loanDate: string;
   onChangeValues: (value: Number | string, name: String) => void;
   onClickRemove: (index: number) => void;
 }
@@ -70,12 +70,12 @@ const EarlyPayoff = (props: Props) => {
   const {
     item,
     index,
-    paymentDay,
+    loanDate,
     onChangeValues,
     onClickRemove,
   } = props;
 
-  const replaceDay = Number(item.date.split('-')[2]);
+  const paymentDay = useMemo(() => Number(loanDate.split('-')[2]), [ loanDate ]);
 
   return (
     <Payoff
@@ -90,6 +90,8 @@ const EarlyPayoff = (props: Props) => {
             paymentDay={paymentDay}
             name={`payoff-date-${index}`}
             type="month"
+            minDate={loanDate}
+            minDateErrorText="Value exceeds start loan"
             label={item.frequency === 'month' ? 'Payment start date' : 'Date'}
             onChange={onChangeValues}
           />
@@ -103,6 +105,8 @@ const EarlyPayoff = (props: Props) => {
                 label="Payment end date"
                 clearable
                 placeholder="Till loan ends"
+                minDate={item.date}
+                minDateErrorText="Value exceeds start payoff"
                 onChange={onChangeValues}
               />
           }

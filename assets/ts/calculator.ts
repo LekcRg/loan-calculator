@@ -98,6 +98,15 @@ export const calculateTable = (
 
     if (payoffList?.length || everyMonthPayoffs?.length) {
       payoffList.forEach(payoff => {
+        if (payoff.addedEvery && payoff.dateEnd) {
+          const dateEndUTC = stringToDate(payoff.dateEnd);
+
+          if (dateEndUTC && dateEndUTC < nextDate) {
+            everyMonthPayoffs.splice(everyMonthPayoffs.indexOf(payoff));
+            return;
+          }
+        }
+
         const payoffAmount = payoff?.amount ? payoff.amount : 0;
 
         ending = ending - payoffAmount;
