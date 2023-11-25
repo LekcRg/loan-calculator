@@ -7,6 +7,7 @@ import RInput from '@/components/ui/RInput';
 import RDatePicker from '@/components/ui/RDatePicker';
 import RButton from '@/components/ui/RButton';
 import RSelect from '@/components/ui/RSelect';
+import { media } from '@/styles/mixins';
 
 type Props = {
   item: EarlyPayoff;
@@ -26,6 +27,15 @@ const Payoff = styled.li`
   &:not(:last-child) {
     margin-bottom: 12px;
   }
+
+  ${media.pc} {
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  ${media.mobile} {
+    padding: 16px;
+  }
 `;
 
 const Index = styled.div`
@@ -34,6 +44,20 @@ const Index = styled.div`
   width: 120px;
   margin-right: 64px;
   align-self: flex-start;
+
+  span {
+    display: none;
+
+    ${media.pc} {
+      display: inline;
+    }
+  }
+
+  ${media.pc} {
+    font-size: 24px;
+    width: 100%;
+    opacity: 1;
+  }
 `;
 
 const Form = styled.div`
@@ -42,6 +66,12 @@ const Form = styled.div`
   flex: 1;
   gap: 16px;
   margin-right: 32px;
+
+  ${media.pc} {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    margin-right: 0;
+  }
 `;
 
 const FormItem = styled.div<{$flex?: boolean}>`
@@ -50,7 +80,16 @@ const FormItem = styled.div<{$flex?: boolean}>`
   ${({ $flex }) => $flex && css`
       display: flex;
       gap: 8px;
+
+      ${media.mobile} {
+        flex-direction: column;
+        gap: 16px;
+      }
   `}
+
+  ${media.pc} {
+    width: 100%;
+  }
 `;
 
 const Input = styled(RInput)`
@@ -81,7 +120,9 @@ const EarlyPayoff = (props: Props) => {
     <Payoff
       key={item.id}
     >
-      <Index>{ index + 1 }</Index>
+      <Index>
+        <span>Payoff </span>{ index + 1 }
+      </Index>
 
       <Form>
         <FormItem $flex>
@@ -92,7 +133,7 @@ const EarlyPayoff = (props: Props) => {
             type="month"
             minDate={loanDate}
             minDateErrorText="Value exceeds start loan"
-            label={item.frequency === 'month' ? 'Payment start date' : 'Date'}
+            label={item.frequency === 'month' ? 'Start date' : 'Date'}
             onChange={onChangeValues}
           />
           {
@@ -102,7 +143,7 @@ const EarlyPayoff = (props: Props) => {
                 paymentDay={paymentDay}
                 name={`payoff-dateEnd-${index}`}
                 type="month"
-                label="Payment end date"
+                label="End date"
                 clearable
                 placeholder="Till loan ends"
                 minDate={item.date}
@@ -167,7 +208,9 @@ const EarlyPayoff = (props: Props) => {
         icon="delete"
         type="red"
         onClick={() => onClickRemove(index)}
-      />
+      >
+
+      </Button>
     </Payoff>
   );
 };
