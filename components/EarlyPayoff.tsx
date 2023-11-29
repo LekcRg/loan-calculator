@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components';
 import RInput from '@/components/ui/RInput';
 import RDatePicker from '@/components/ui/RDatePicker';
 import RButton from '@/components/ui/RButton';
-import RSelect from '@/components/ui/RSelect';
+import RSelect from '@/components/ui/RSelect1';
 import { media } from '@/styles/mixins';
 
 type Props = {
@@ -133,11 +133,11 @@ const EarlyPayoff = (props: Props) => {
             type="month"
             minDate={loanDate}
             minDateErrorText="Value exceeds start loan"
-            label={item.frequency === 'month' ? 'Start date' : 'Date'}
+            label={item.frequency?.value === 'month' ? 'Start date' : 'Date'}
             onChange={onChangeValues}
           />
           {
-            item.frequency === 'month' && 
+            item.frequency?.value === 'month' && 
               <DatePicker
                 value={item.dateEnd}
                 paymentDay={paymentDay}

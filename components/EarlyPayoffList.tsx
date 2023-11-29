@@ -61,8 +61,14 @@ const EarlyPayoffList = (props: Props) => {
         amount: 1000,
         date: nextPayoffDate,
         id,
-        type: 'term',
-        frequency: 'one-time',
+        type: {
+          label: 'Reduce loan term',
+          value: 'term',
+        },
+        frequency: {
+          label: 'One-time',
+          value: 'one-time',
+        },
       },
     ]);
 

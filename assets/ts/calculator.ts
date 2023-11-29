@@ -122,7 +122,7 @@ export const calculateTable = (
 
         totalPayments += payoffAmount;
 
-        if (payoff.type === 'payment') {
+        if (payoff.type?.value === 'payment') {
           termMonth -= index;
 
           newMonthly = calculateMonthly({
@@ -132,7 +132,7 @@ export const calculateTable = (
           }, true);
         }
 
-        if (!payoff.addedEvery && payoff.frequency === 'month') {
+        if (!payoff.addedEvery && payoff.frequency?.value === 'month') {
           everyMonthPayoffs.push({
             ...payoff,
             addedEvery: true,

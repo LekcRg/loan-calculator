@@ -26,8 +26,15 @@ export type EarlyPayoff = {
   amount: number;
   date: string;
   dateEnd?: string;
-  type: 'payment' | 'term';
-  frequency: 'one-time' | 'month';
+  // type: 'payment' | 'term';
+  type: {
+    value: 'payment' | term;
+    label: string;
+  };
+  frequency: {
+    value: 'one-time' | 'month';
+    label: string;
+  };
   addedEvery?: Boolean;
   id: number;
 }

@@ -5,6 +5,7 @@ import type { CalculateTableData, LoanData } from '@/types/Calculator';
 import CalculatorResult from './CalculatorResult';
 import RDatePicker from '@/components/ui/RDatePicker';
 import RSlider from '@/components/ui/RSlider';
+import RSelect from '@/components/ui/RSelect1';
 import { media } from '@/styles/mixins';
 
 type Props = {
@@ -54,7 +55,7 @@ const CalculatorForm = (props: Props) => {
       />
 
       <Slider
-        label="Term (years)"
+        label="Term"
         name="term"
         withInput
         suffix=" years"

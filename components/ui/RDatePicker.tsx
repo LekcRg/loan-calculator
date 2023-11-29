@@ -61,7 +61,7 @@ const Button = styled.button<{ $blue?: boolean, $error?: boolean }>`
     : theme.colors.dark3};
   font-size: 18px;
   color: ${({ theme }) => theme.colors.light1};
-  padding: 11px;
+  padding: 15px;
   border-radius: 4px;
   outline: none;
   border: 1px ${({ $blue, theme }) => $blue
