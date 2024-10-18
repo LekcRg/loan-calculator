@@ -10,7 +10,7 @@ jobs:
     steps:
       # Клонируем репозиторий
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@main
 
       # Собираем Docker-образ и сохраняем его в файл
       - name: Build Docker image
